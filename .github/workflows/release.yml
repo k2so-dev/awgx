@@ -22,11 +22,15 @@ jobs:
         env:
           MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
           MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
+          MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
         run: |
           sudo apt-get install -y minisign
-          printf '%s\n' "$MINISIGN_SECRET_KEY" > minisign.key
+          printf '%s\n' "$MINISIGN_SECRET_KEY" | tr -d '\r' | sed '/^[[:space:]]*$/d' > minisign.key
+          grep -q '^untrusted comment:' minisign.key || sed -i '1i untrusted comment: minisign encrypted secret key' minisign.key
+          echo "secret key file: $(wc -l < minisign.key) lines, key line $(sed -n 2p minisign.key | tr -d '\n' | wc -c) chars"
           for f in dist/awgx-linux-*; do
             printf '%s\n' "$MINISIGN_PASSWORD" | minisign -S -s minisign.key -m "$f" -t "awgx ${GITHUB_REF_NAME} $(basename "$f")"
+            minisign -V -P "$MINISIGN_PUBLIC_KEY" -m "$f"
           done
           rm minisign.key
           cd dist && sha256sum awgx-linux-* > checksums.txt
