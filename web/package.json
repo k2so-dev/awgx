@@ -1,0 +1,13 @@
+{
+  "name": "awgx-web",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "tailwindcss -i input.css -o ../internal/web/assets/app.css --minify && cp node_modules/@alpinejs/csp/dist/cdn.min.js ../internal/web/assets/alpine.min.js"
+  },
+  "devDependencies": {
+    "@alpinejs/csp": "3.17.4",
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}

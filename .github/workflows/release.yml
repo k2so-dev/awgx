@@ -1,0 +1,41 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - run: go test ./...
+      - run: make build-all VERSION=${GITHUB_REF_NAME} RELEASE_KEY="${{ vars.MINISIGN_PUBLIC_KEY }}"
+      - run: make licenses
+      - name: Sign
+        env:
+          MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
+          MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
+        run: |
+          sudo apt-get install -y minisign
+          printf '%s\n' "$MINISIGN_SECRET_KEY" > minisign.key
+          for f in dist/awgx-linux-*; do
+            printf '%s\n' "$MINISIGN_PASSWORD" | minisign -S -s minisign.key -m "$f" -t "awgx ${GITHUB_REF_NAME} $(basename "$f")"
+          done
+          rm minisign.key
+          cd dist && sha256sum awgx-linux-* > checksums.txt
+      - uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: dist/awgx.spdx.json
+      - uses: softprops/action-gh-release@v3
+        with:
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: dist/*

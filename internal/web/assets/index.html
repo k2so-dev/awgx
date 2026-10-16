@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>awgx</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="app.css">
+<script src="app.js"></script>
+<script src="peers.js"></script>
+<script src="instances.js"></script>
+<script src="egress.js"></script>
+<script src="ops.js"></script>
+<script defer src="alpine.min.js"></script>
+</head>
+<body x-data="app" x-cloak>
+<svg class="sprite" aria-hidden="true">
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16M18 17V9M13 17V5M8 17v-3"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65M22 12.65l-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+<symbol id="i-pulse" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-scroll" viewBox="0 0 24 24"><path d="M15 12h-5M15 8h-5M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="m16 17 5-5-5-5M21 12H9M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 12h16M4 6h16M4 18h16"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1"/></symbol>
+<symbol id="i-power" viewBox="0 0 24 24"><path d="M12 2v10M18.4 6.6a9 9 0 1 1-12.77.04"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+<symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5zM15 5l4 4"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-chev-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3M12 9v4M12 17h.01"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+<symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"/></symbol>
+<symbol id="i-rotate" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8M21 3v5h-5"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></symbol>
+<symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5"/></symbol>
+<symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+<symbol id="i-spin" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></symbol>
+<symbol id="i-git" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7M11 18H8a2 2 0 0 1-2-2V9"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zM12 22V12M3.3 7l8.7 5 8.7-5"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><path d="M2.59 17.41A2 2 0 0 0 2 18.83V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.17a2 2 0 0 0 1.42-.59l.81-.81a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5"/></symbol>
+<symbol id="i-archive" viewBox="0 0 24 24"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72M14 7l3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 1 1 0 10h-2M8 12h8"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3 20 12 6 21Z"/></symbol>
+</svg>
+
+<div class="login" x-show="showLogin">
+<div class="login-card">
+<div class="card">
+<div class="login-head">
+<span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg></span>
+<h1 class="h1">Sign in to awgx</h1>
+<p class="sub">AmneziaWG server admin</p>
+</div>
+<form class="card-body form" @submit.prevent="submitLogin" novalidate>
+<div class="callout callout-muted" role="status" x-show="loginNotice">
+<svg class="icon" aria-hidden="true"><use href="#i-timer"></use></svg>
+<span x-text="loginNotice"></span>
+</div>
+<div class="field">
+<label class="label" for="pw">Password</label>
+<input class="input" id="pw" x-ref="pw" type="password" autocomplete="current-password" x-model="login.password" :aria-invalid="loginInvalid" aria-describedby="login-error" data-autofocus>
+</div>
+<div class="field" x-show="totp">
+<label class="label" for="code">Authenticator code</label>
+<input class="input input-mono" id="code" x-ref="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" :value="login.code" @input="onCodeInput" :aria-invalid="loginInvalid" aria-describedby="login-error">
+<p class="hint">6 digits from your authenticator app.</p>
+</div>
+<p class="error" id="login-error" role="alert" x-show="login.error" x-text="login.error"></p>
+<button class="btn btn-primary btn-block" type="submit" :disabled="loginBusy">
+<svg class="icon spin" aria-hidden="true" x-show="loginBusy"><use href="#i-spin"></use></svg><span>Sign in</span>
+</button>
+</form>
+</div>
+<p class="login-foot">Open this page through an SSH tunnel or a TLS reverse proxy.</p>
+</div>
+</div>
+
+<div class="restart" x-show="restarting" role="status" aria-live="polite">
+<div class="restart-box">
+<span class="restart-ico"><svg class="icon spin" aria-hidden="true"><use href="#i-spin"></use></svg></span>
+<h1 class="h1" x-text="restartMsg"></h1>
+<p class="sub">The server is restarting. This page reloads by itself when it is back, then you sign in again.</p>
+<p class="xs muted" x-text="restartNote"></p>
+</div>
+</div>
+
+<div class="shell" x-show="showApp">
+<div class="content">
+<header class="top" @click.outside="navAway" @keydown.escape="closeNav">
+<div class="wrap topbar-row">
+<a class="brand" href="#/dashboard"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg></span><span>awgx</span></a>
+<div class="server" title="Server"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-server"></use></svg><span class="mono" x-text="serverName"></span><span class="xs" x-text="serverVersion"></span></div>
+<div class="topbar-end">
+<span class="busy" x-show="busy" role="status" aria-label="Working"><svg class="icon spin" aria-hidden="true"><use href="#i-spin"></use></svg></span>
+<div class="menu-wrap" @click.outside="clickAway('theme')">
+<button class="btn btn-ghost btn-icon muted-btn" type="button" @click="openMenu('theme', $event)" :title="themeLabel" aria-haspopup="menu" :aria-expanded="menuExpanded('theme')" :aria-label="themeLabel">
+<svg class="icon" aria-hidden="true" x-show="themeIs('light')"><use href="#i-sun"></use></svg>
+<svg class="icon" aria-hidden="true" x-show="themeIs('dark')"><use href="#i-moon"></use></svg>
+<svg class="icon" aria-hidden="true" x-show="themeIs('system')"><use href="#i-monitor"></use></svg>
+</button>
+<div class="menu" role="menu" aria-label="Theme" data-menu="theme" x-show="menuShown('theme')" @keydown="menuKey">
+<button class="menu-item" type="button" role="menuitemradio" :aria-checked="themeChecked('system')" @click="setTheme('system')"><svg class="icon" aria-hidden="true"><use href="#i-monitor"></use></svg>System<svg class="icon check" aria-hidden="true" x-show="themeIs('system')"><use href="#i-check"></use></svg></button>
+<button class="menu-item" type="button" role="menuitemradio" :aria-checked="themeChecked('light')" @click="setTheme('light')"><svg class="icon" aria-hidden="true"><use href="#i-sun"></use></svg>Light<svg class="icon check" aria-hidden="true" x-show="themeIs('light')"><use href="#i-check"></use></svg></button>
+<button class="menu-item" type="button" role="menuitemradio" :aria-checked="themeChecked('dark')" @click="setTheme('dark')"><svg class="icon" aria-hidden="true"><use href="#i-moon"></use></svg>Dark<svg class="icon check" aria-hidden="true" x-show="themeIs('dark')"><use href="#i-check"></use></svg></button>
+</div>
+</div>
+<button class="btn btn-ghost btn-icon muted-btn" type="button" @click="logout" aria-label="Log out" title="Log out"><svg class="icon" aria-hidden="true"><use href="#i-logout"></use></svg></button>
+<button class="btn btn-ghost btn-icon tnav-btn" type="button" x-ref="navBtn" @click="toggleNav" :aria-expanded="navOpenAttr" aria-controls="tnav" aria-label="Menu"><svg class="icon" aria-hidden="true"><use href="#i-menu"></use></svg></button>
+</div>
+</div>
+<nav class="tnav" id="tnav" :data-open="navOpenAttr" aria-label="Main">
+<div class="wrap tnav-in">
+<template x-for="g in nav" :key="g.id">
+<div class="nav-group">
+<div class="nav-h" x-show="g.label" x-text="g.label"></div>
+<template x-for="it in g.items" :key="it.r">
+<a class="nav-link" :href="navHref(it)" :aria-current="navCurrent(it.r)">
+<svg class="icon" aria-hidden="true"><use :href="ic(it.i)"></use></svg>
+<span x-text="it.t"></span>
+<span :class="navBadgeClass(it)" x-show="hasNavBadge(it)" x-text="navBadge(it)"></span>
+</a>
+</template>
+</div>
+</template>
+</div>
+</nav>
+<div class="banner banner-info" x-show="jobBanner">
+<div class="wrap banner-row">
+<div class="banner-text"><svg class="icon spin" aria-hidden="true"><use href="#i-spin"></use></svg><span><span class="medium" x-text="jobTitle"></span> is running · <span x-text="jobStep"></span></span></div>
+<button class="btn btn-sm btn-outline" type="button" @click="showJob">Show progress</button>
+</div>
+</div>
+<div class="banner banner-info" x-show="showUpdate">
+<div class="wrap banner-row">
+<div class="banner-text"><svg class="icon" aria-hidden="true"><use href="#i-up"></use></svg><span>awgx <span class="strong" x-text="overview.update"></span> is available. <a href="#/system/general">Update in System</a></span></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn" type="button" @click="dismissUpdate" aria-label="Dismiss update notice"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+</div>
+</div>
+</header>
+
+<main class="main wrap" id="main">
+
+<section class="page" x-show="isRoute('dashboard')" aria-labelledby="h-dash">
+<div class="page-head"><div><h1 class="h1" id="h-dash">Dashboard</h1><p class="sub">Online means a handshake in the last 3 minutes.</p></div></div>
+<div class="stats">
+<div class="card stat"><span class="stat-label"><span class="dot dot-on" aria-hidden="true"></span>Peers online</span><span class="stat-value"><span x-text="summary.online"></span> <small>/ <span x-text="summary.peers"></span></small></span></div>
+<div class="card stat"><span class="stat-label"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-down"></use></svg>Received <span x-text="sinceText"></span></span><span class="stat-value" x-text="summary.rx"></span></div>
+<div class="card stat"><span class="stat-label"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-up"></use></svg>Sent <span x-text="sinceText"></span></span><span class="stat-value" x-text="summary.tx"></span></div>
+</div>
+<div class="split">
+<div class="card">
+<div class="card-head"><h2 class="card-title">Needs attention</h2></div>
+<div class="att list-top">
+<template x-for="a in attention" :key="a.id">
+<a :class="attClass(a)" :href="a.href" @click="attGo(a)">
+<span class="att-ico"><svg class="icon" aria-hidden="true"><use :href="ic(a.icon)"></use></svg></span>
+<span class="cell-stack grow"><span class="medium" x-text="a.t"></span><span class="small muted trunc" x-text="a.d"></span></span>
+<svg class="icon muted" aria-hidden="true"><use href="#i-chev"></use></svg>
+</a>
+</template>
+<div class="list-item" x-show="attentionEmpty"><svg class="icon ok-text" aria-hidden="true"><use href="#i-check-circle"></use></svg><span class="muted">Nothing needs attention.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><h2 class="card-title">Instances</h2><a class="small" href="#/instances">Details</a></div>
+<div class="list list-top">
+<template x-for="i in overview.instances" :key="i.name">
+<a class="list-item link-row" :href="instHref(i)">
+<span :class="upDot(i)" aria-hidden="true"></span>
+<span class="cell-stack grow"><span class="medium" x-text="i.name"></span><span class="xs muted mono trunc" x-text="instEndpoint(i)"></span></span>
+<span class="badge" x-text="i.preset"></span>
+<span class="small muted nowrap" x-text="instOnline(i)"></span>
+</a>
+</template>
+</div>
+</div>
+</div>
+<div class="split">
+<div class="card">
+<div class="card-head">
+<div><h2 class="card-title">Traffic</h2><p class="card-desc">Sent <span x-text="dashTotals.tx"></span> · received <span x-text="dashTotals.rx"></span></p></div>
+<div class="seg" role="radiogroup" aria-label="Period"><template x-for="p in periods" :key="p.id"><button class="seg-item" type="button" role="radio" :aria-checked="dashPeriodIs(p)" @click="setDashPeriod(p)" x-text="p.label"></button></template></div>
+</div>
+<div class="card-body">
+<div id="slot-dash"><div class="chart" id="chart" data-chart>
+<svg :viewBox="ch.viewBox" :height="ch.H" role="img" tabindex="0" :aria-label="chartLabel" @keydown="chartKey" @blur="chartLeave">
+<path class="ch-grid" :d="ch.grid"></path>
+<text class="ch-label" text-anchor="end" :x="ch.yLabelX" :y="ch.yTicks[0].y" x-text="ch.yTicks[0].label"></text>
+<text class="ch-label" text-anchor="end" :x="ch.yLabelX" :y="ch.yTicks[1].y" x-text="ch.yTicks[1].label"></text>
+<text class="ch-label" text-anchor="end" :x="ch.yLabelX" :y="ch.yTicks[2].y" x-text="ch.yTicks[2].label"></text>
+<text class="ch-label" text-anchor="end" :x="ch.yLabelX" :y="ch.yTicks[3].y" x-text="ch.yTicks[3].label"></text>
+<text class="ch-label" text-anchor="end" :x="ch.yLabelX" :y="ch.yTicks[4].y" x-text="ch.yTicks[4].label"></text>
+<text class="ch-label" :x="ch.xTicks[0].x" :y="ch.xLabelY" :text-anchor="ch.xTicks[0].anchor" x-text="ch.xTicks[0].label"></text>
+<text class="ch-label" :x="ch.xTicks[1].x" :y="ch.xLabelY" :text-anchor="ch.xTicks[1].anchor" x-text="ch.xTicks[1].label"></text>
+<text class="ch-label" :x="ch.xTicks[2].x" :y="ch.xLabelY" :text-anchor="ch.xTicks[2].anchor" x-text="ch.xTicks[2].label"></text>
+<text class="ch-label" :x="ch.xTicks[3].x" :y="ch.xLabelY" :text-anchor="ch.xTicks[3].anchor" x-text="ch.xTicks[3].label"></text>
+<text class="ch-label" :x="ch.xTicks[4].x" :y="ch.xLabelY" :text-anchor="ch.xTicks[4].anchor" x-text="ch.xTicks[4].label"></text>
+<text class="ch-label" :x="ch.xTicks[5].x" :y="ch.xLabelY" :text-anchor="ch.xTicks[5].anchor" x-text="ch.xTicks[5].label"></text>
+<path class="ch-rx-area" :d="ch.rxArea"></path><path class="ch-tx-area" :d="ch.txArea"></path><path class="ch-rx-line" :d="ch.rxLine"></path><path class="ch-tx-line" :d="ch.txLine"></path><path class="ch-base" :d="ch.base"></path>
+<g x-show="tip.show">
+<line class="ch-cursor" :x1="tip.x" :x2="tip.x" :y1="ch.T" :y2="ch.bottom"></line>
+<circle class="ch-pt-rx" r="3.5" :cx="tip.x" :cy="tip.yRx"></circle><circle class="ch-pt-tx" r="3.5" :cx="tip.x" :cy="tip.yTx"></circle>
+<g class="ch-tip" :transform="tip.transform"><rect width="172" height="66" rx="6"></rect><text class="t-muted" x="10" y="19" x-text="tip.time"></text><rect class="sw-tx" x="10" y="30" width="8" height="8" rx="2"></rect><text x="24" y="38">Sent</text><text x="162" y="38" text-anchor="end" x-text="tip.tx"></text><rect class="sw-rx" x="10" y="46" width="8" height="8" rx="2"></rect><text x="24" y="54">Received</text><text x="162" y="54" text-anchor="end" x-text="tip.rx"></text></g>
+</g>
+<rect class="ch-hit" :x="ch.L" :y="ch.T" :width="ch.pw" :height="ch.ph" @pointermove="chartMove" @pointerdown="chartMove" @pointerleave="chartLeave"></rect>
+</svg>
+<div class="chart-empty" x-show="ch.empty">No traffic in this period</div>
+</div></div>
+<div class="legend chart-legend"><span><i class="sw-tx"></i>Sent</span><span><i class="sw-rx"></i>Received</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><h2 class="card-title">Last handshakes</h2><a class="small" href="#/peers">All peers</a></div>
+<div class="list list-top">
+<template x-for="p in recent" :key="p.name">
+<div class="list-item">
+<span :class="dotClass(p)" :title="dotLabel(p)"></span>
+<div class="cell-stack grow"><span class="medium trunc" x-text="p.name"></span><span class="xs muted mono trunc" x-text="p.endpoint"></span></div>
+<span class="small muted nowrap" :title="abs(p.last_handshake)" x-text="rel(p.last_handshake)"></span>
+</div>
+</template>
+<p class="list-item small muted" x-show="recentEmpty">No handshakes yet.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('peers')" aria-labelledby="h-peers">
+<div class="page-head">
+<div><h1 class="h1" id="h-peers">Peers</h1><p class="sub" x-text="peerCount"></p></div>
+<button class="btn btn-primary" type="button" @click="openAdd"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>Add peer</button>
+</div>
+<div class="card" x-show="peersEmpty">
+<div class="empty">
+<span class="empty-ico"><svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg></span>
+<h2 class="h2">No peers yet</h2>
+<p class="sub">Add a peer for each phone or laptop that connects to this server.</p>
+<button class="btn btn-primary" type="button" @click="openAdd"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>Add peer</button>
+</div>
+</div>
+<div class="toolbar" x-show="hasPeers">
+<div class="search"><svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg><input class="input" type="search" placeholder="Search name, address, note" aria-label="Search peers" x-model="q"></div>
+<select class="input" aria-label="Filter by instance" x-model="fInstance" x-show="multi"><option value="">All instances</option><template x-for="n in instanceNames" :key="n"><option :value="n" x-text="n"></option></template></select>
+<select class="input" aria-label="Filter by status" x-model="fStatus"><option value="">Any status</option><option value="online">Online</option><option value="enabled">Enabled</option><option value="disabled">Disabled</option><option value="expired">Expired</option></select>
+<button class="btn btn-ghost btn-sm" type="button" x-show="hasFilters" @click="clearFilters">Clear</button>
+</div>
+<div class="card" x-show="hasPeers">
+<table class="tbl tbl-cards">
+<thead><tr><th scope="col">Name</th><th scope="col" x-show="multi">Instance</th><th scope="col">Address</th><th scope="col">Last handshake</th><th scope="col" class="num">Transfer</th><th scope="col">Egress</th><th scope="col">Status</th><th scope="col" class="act"><span class="sr-only">Actions</span></th></tr></thead>
+<tbody>
+<template x-for="p in filteredPeers" :key="p.name">
+<tr class="clickable" tabindex="0" @click="openPeer(p)" @keydown="rowKey($event, p)">
+<td class="span">
+<div class="cell-main">
+<span :class="dotClass(p)" :title="dotLabel(p)"></span><span class="sr-only" x-text="dotLabel(p)"></span>
+<div class="cell-stack"><span class="row"><span class="medium trunc" x-text="p.name"></span><span class="badge badge-muted" x-show="p.net_label" x-text="p.net_label"></span></span><span class="small muted trunc" x-show="p.note" x-text="p.note"></span></div>
+</div>
+</td>
+<td data-label="Instance" x-show="multi" x-text="p.instance"></td>
+<td data-label="Address"><div class="cell-stack"><span class="mono" x-text="p.address4"></span><span class="mono xs muted addr6" x-text="addr6(p)"></span></div></td>
+<td data-label="Last handshake" class="nowrap"><span :title="abs(p.last_handshake)" x-text="rel(p.last_handshake)"></span></td>
+<td data-label="Transfer" class="num"><div class="cell-stack"><span><span class="muted">↓ </span><span x-text="bytes(p.rx_bytes)"></span></span><span><span class="muted">↑ </span><span x-text="bytes(p.tx_bytes)"></span></span></div></td>
+<td data-label="Egress"><span class="row"><span :class="egressClass(p)" x-text="egressText(p)"></span><span class="badge badge-warn" x-show="p.killswitch" title="Killswitch: traffic is dropped if the profile is down"><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg><span class="sr-only">Killswitch</span></span></span></td>
+<td data-label="Status"><div class="cell-stack"><span><span :class="statusClass(p)" x-text="p.status"></span></span><span class="xs muted nowrap" x-show="p.expires_at" x-text="expiryText(p)"></span></div></td>
+<td class="act">
+<div class="acts">
+<button class="btn btn-outline btn-sm" type="button" @click.stop="openExport(p)" :aria-label="configLabel(p)"><svg class="icon" aria-hidden="true"><use href="#i-qr"></use></svg>Config</button>
+<button class="btn btn-ghost btn-icon muted-btn" type="button" @click.stop="openPeer(p)" :aria-label="editLabel(p)" :title="editLabel(p)"><svg class="icon" aria-hidden="true"><use href="#i-pencil"></use></svg></button>
+</div>
+</td>
+</tr>
+</template>
+</tbody>
+</table>
+<div class="empty" x-show="noMatches"><h2 class="h2">No peers match</h2><p class="sub">Try another name or address, or clear the filters.</p><button class="btn btn-outline btn-sm" type="button" @click="clearFilters">Clear filters</button></div>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('stats')" aria-labelledby="h-stats">
+<div class="page-head">
+<div><h1 class="h1" id="h-stats">Stats</h1><p class="sub">Sent <span x-text="statsTotals.tx"></span> · received <span x-text="statsTotals.rx"></span></p></div>
+<div class="seg" role="radiogroup" aria-label="Period"><template x-for="p in periods" :key="p.id"><button class="seg-item" type="button" role="radio" :aria-checked="periodIs(p)" @click="setStatsPeriod(p)" x-text="p.label"></button></template></div>
+</div>
+<div class="card">
+<div class="card-head">
+<div class="row-wrap"><h2 class="card-title">Traffic</h2><span class="chip" x-show="statsPeer"><span>Peer: <span x-text="statsPeer"></span></span><button type="button" @click="clearPeer" aria-label="Remove peer filter"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"></use></svg></button></span></div>
+<div class="legend"><span><i class="sw-tx"></i>Sent</span><span><i class="sw-rx"></i>Received</span></div>
+</div>
+<div class="card-body">
+<div id="slot-stats"></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h2 class="card-title">Per peer</h2><p class="card-desc">Select a row to show only that peer in the chart.</p></div></div>
+<div class="tbl-scroll">
+<table class="tbl tbl-min">
+<thead><tr><th scope="col">Peer</th><th scope="col" class="num">Received</th><th scope="col" class="num">Sent</th><th scope="col" class="num">Handshakes</th><th scope="col" class="num">Failures</th><th scope="col">Endpoint</th><th scope="col">Last handshake</th></tr></thead>
+<tbody>
+<template x-for="r in statsRows" :key="r.peer">
+<tr class="clickable" tabindex="0" :aria-selected="rowSel(r)" @click="pickPeer(r)" @keydown="pickPeerKey($event, r)">
+<td class="medium" x-text="r.peer"></td><td class="num" x-text="bytes(r.rx)"></td><td class="num" x-text="bytes(r.tx)"></td><td class="num" x-text="r.handshakes"></td><td :class="failClass(r)" x-text="r.failures"></td><td class="mono nowrap" x-text="endpointText(r)"></td><td class="nowrap"><span :title="abs(r.last_handshake)" x-text="rel(r.last_handshake)"></span></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('instances')" aria-labelledby="h-inst">
+<div class="page-head">
+<div><h1 class="h1" id="h-inst">Instances</h1><p class="sub">Each instance is one AmneziaWG interface with its own port, subnets and obfuscation.</p></div>
+<button class="btn btn-primary" type="button" @click="addInstance"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>Add instance</button>
+</div>
+<nav class="tabs" aria-label="Instances" x-show="instMany">
+<template x-for="i in instances" :key="i.name">
+<a class="tab" :href="instHref(i)" :aria-current="instTab(i)"><span :class="upDot(i)" aria-hidden="true"></span><span x-text="i.name"></span><span class="xs muted mono" x-text="i.port"></span></a>
+</template>
+</nav>
+<div class="card" x-show="instLoaded && !instances.length"><div class="empty"><span class="empty-ico"><svg class="icon" aria-hidden="true"><use href="#i-server"></use></svg></span><h2 class="h2">No instances</h2><p class="sub">AmneziaWG is installed but no interface is running. Add an instance to accept clients.</p><button class="btn btn-primary" type="button" @click="addInstance">Add instance</button></div></div>
+<div x-show="instances.length" class="card inst">
+<div class="card-head">
+<div class="row-wrap"><h2 class="h2 mono" x-text="cur.name"></h2><span :class="curUpClass" x-text="curUp"></span><span :class="curPresetClass" x-text="cur.preset"></span></div>
+<div class="menu-wrap" @click.outside="clickAway('inst')">
+<button class="btn btn-outline btn-sm" type="button" @click="openMenu('inst', $event)" aria-haspopup="menu" :aria-expanded="menuExpanded('inst')">Actions<svg class="icon" aria-hidden="true"><use href="#i-chev-down"></use></svg></button>
+<div class="menu menu-wide" role="menu" aria-label="Instance actions" data-menu="inst" x-show="menuShown('inst')" @keydown="menuKey">
+<template x-for="a in instActions" :key="a.id">
+<button :class="actClass(a)" type="button" role="menuitem" @click="instAction(a)"><span class="grow" x-text="a.t"></span><span class="ri" x-show="a.ri" aria-label="changes client configs"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span></button>
+</template>
+</div>
+</div>
+</div>
+<div class="card-body"><p class="small muted"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span> marks settings that change client configs. After such a change every client of <span class="mono" x-text="cur.name"></span> (<span x-text="curPeers"></span>) must import its config again.</p></div>
+</div>
+<div x-show="instances.length" class="grid-2">
+<div class="card inst">
+<div class="card-head"><h2 class="card-title">Network</h2><button class="btn btn-ghost btn-sm" type="button" @click="openInstSheet('endpoint')"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span>Change endpoint</button></div>
+<dl class="card-body kv"><template x-for="r in curNet" :key="r.k"><div><dt><span x-text="r.k"></span> <span class="ri ri-sm" x-show="r.ri" aria-label="changes client configs"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span></dt><dd :class="r.c" x-text="r.v"></dd></div></template></dl>
+</div>
+<div class="card inst">
+<div class="card-head">
+<h2 class="card-title">First packet (I1) <span class="ri" aria-label="changes client configs"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span></h2>
+<div class="row"><button class="btn btn-ghost btn-sm" type="button" @click="askRotate"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg>Rotate now</button><button class="btn btn-ghost btn-sm" type="button" @click="openInstSheet('i1')">Change</button></div>
+</div>
+<div class="card-body form">
+<dl class="kv"><template x-for="r in curI1" :key="r.k"><div><dt x-text="r.k"></dt><dd :class="r.c" x-text="r.v"></dd></div></template></dl>
+<div class="field" x-show="hasPacket"><span class="xs muted">Packet</span><code class="code code-wrap code-sm" x-text="curPacket"></code></div>
+</div>
+</div>
+</div>
+<div x-show="instances.length" class="card inst">
+<div class="card-head">
+<div class="row-wrap"><h2 class="card-title">Obfuscation <span class="ri" aria-label="changes client configs"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span></h2><span :class="curPresetClass" x-text="cur.preset"></span></div>
+<button class="btn btn-ghost btn-sm" type="button" @click="openInstSheet('obf')">Change</button>
+</div>
+<div class="pgrid">
+<template x-for="g in curObf" :key="g.id">
+<div class="pgroup"><h3 class="pgroup-h" x-text="g.title"></h3><dl :class="g.cls"><template x-for="v in g.vals" :key="v.k"><div class="pv"><dt x-text="v.l"></dt><dd x-text="v.v"></dd></div></template></dl></div>
+</template>
+<div class="pgroup"><h3 class="pgroup-h">Flags and extras</h3><dl class="flags"><template x-for="f in curFlags" :key="f.k"><div class="flag"><dt x-text="f.k"></dt><dd class="mono" x-text="f.v"></dd></div></template></dl></div>
+</div>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('egress')" aria-labelledby="h-eg">
+<div class="page-head">
+<div><h1 class="h1" id="h-eg">Egress</h1><p class="sub">Where peer traffic leaves the server. Edits go to a draft; nothing changes until you apply it.</p></div>
+<div class="row-wrap">
+<ol class="flow" aria-label="Change flow"><template x-for="f in flow" :key="f.n"><li class="flow-i" :data-state="flowState(f)"><span class="step-n" x-text="f.n"></span><span x-text="f.t"></span></li></template></ol>
+<button class="btn btn-outline" type="button" @click="openPlan"><svg class="icon" aria-hidden="true"><use href="#i-git"></use></svg>Review plan</button>
+</div>
+</div>
+<nav class="tabs" aria-label="Egress sections">
+<template x-for="t in egTabs" :key="t.id"><a class="tab" :href="egTabHref(t)" :aria-current="egTabCur(t)"><span x-text="t.t"></span><span class="tab-count" x-show="hasTabCount(t)" x-text="egTabCount(t)"></span></a></template>
+</nav>
+
+<div class="page" x-show="egTabIs('routes')">
+<div class="card">
+<div class="card-head"><div><h2 class="card-title">Default route per instance</h2><p class="card-desc">Used by every peer of the instance without an override. Killswitch drops traffic instead of falling back.</p></div></div>
+<div class="tbl-scroll"><table class="tbl tbl-min-sm">
+<thead><tr><th scope="col">Instance</th><th scope="col">Route</th><th scope="col">Killswitch</th></tr></thead>
+<tbody><template x-for="r in egDefaults" :key="r.instance"><tr>
+<td class="medium mono" x-text="r.instance"></td>
+<td><select class="input input-sm" @change="setDefault(r, $event)" :aria-label="routeLabel(r)"><template x-for="o in routeOptions" :key="o"><option :value="o" :selected="routeSelected(r, o)" x-text="o"></option></template></select></td>
+<td><button class="switch" type="button" role="switch" :aria-checked="ksChecked(r)" :disabled="ksDisabled(r)" :aria-label="ksLabel(r)" @click="flipDefaultKs(r)"></button></td>
+</tr></template></tbody>
+</table></div>
+</div>
+<div class="card">
+<div class="card-head"><div><h2 class="card-title">Peer overrides</h2><p class="card-desc">Peers that leave through another route than their instance default.</p></div><button class="btn btn-outline btn-sm" type="button" @click="openAssign"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>Assign peers</button></div>
+<div class="tbl-scroll" x-show="egOverrides.length"><table class="tbl tbl-min-sm">
+<thead><tr><th scope="col">Peer</th><th scope="col" x-show="multi">Instance</th><th scope="col">Route</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+<tbody><template x-for="r in egOverrides" :key="r.peer"><tr>
+<td class="medium" x-text="r.peer"></td><td x-show="multi" x-text="r.instance"></td>
+<td><span class="row"><span class="badge badge-mono" x-text="r.profile"></span><span class="badge badge-warn" x-show="r.killswitch"><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>killswitch</span></span></td>
+<td class="act"><div class="acts"><button class="btn btn-ghost btn-sm" type="button" @click="editOverride(r)">Change</button><button class="btn btn-ghost btn-icon muted-btn danger-btn" type="button" @click="removeOverride(r)" :aria-label="removeLabel(r)" :title="removeLabel(r)"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button></div></td>
+</tr></template></tbody>
+</table></div>
+<p class="card-body small muted" x-show="noOverrides">All peers use their instance default.</p>
+</div>
+</div>
+
+<div class="card" x-show="egTabIs('profiles')">
+<div class="card-head"><div><h2 class="card-title">Profiles</h2><p class="card-desc">Exits a route can use instead of the server’s own uplink.</p></div><button class="btn btn-outline btn-sm" type="button" @click="newProfile"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>Add profile</button></div>
+<div class="tbl-scroll"><table class="tbl tbl-min">
+<thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Target</th><th scope="col">Fallback</th><th scope="col">Health</th><th scope="col">Used by</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+<tbody><template x-for="pr in egress.profiles" :key="pr.name"><tr>
+<td class="medium" x-text="pr.name"></td><td><span class="badge badge-mono" x-text="pr.kind"></span></td><td class="mono" x-text="pr.target"></td><td x-text="fallbackText(pr)"></td><td><span :class="healthClass(pr)" x-text="pr.health"></span></td><td class="small muted" x-text="profUsed(pr)"></td>
+<td class="act"><div class="acts"><button class="btn btn-ghost btn-icon muted-btn" type="button" @click="openProfile(pr)" :aria-label="profEditLabel(pr)" :title="profEditLabel(pr)"><svg class="icon" aria-hidden="true"><use href="#i-pencil"></use></svg></button><button class="btn btn-ghost btn-icon muted-btn danger-btn" type="button" x-show="profDeletable(pr)" @click="askDeleteProfile(pr)" :aria-label="profDelLabel(pr)" :title="profDelLabel(pr)"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg></button></div><a class="small" href="#/egress/xui" x-show="profManaged(pr)">3x-ui</a></td>
+</tr></template></tbody>
+</table></div>
+</div>
+
+<div class="page" x-show="egTabIs('uplinks')">
+<div class="row foot-split"><p class="sub grow">Client interfaces to other AmneziaWG servers. iface profiles use them for cascades.</p><button class="btn btn-outline btn-sm" type="button" @click="openUplink"><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>Add uplink</button></div>
+<div class="card" x-show="noUplinks"><div class="empty"><span class="empty-ico"><svg class="icon" aria-hidden="true"><use href="#i-link"></use></svg></span><h2 class="h2">No uplinks</h2><p class="sub">Paste the client .conf of another server to send traffic through it.</p><button class="btn btn-primary" type="button" @click="openUplink">Add uplink</button></div></div>
+<template x-for="u in uplinks" :key="u.name">
+<div class="card">
+<div class="card-head">
+<div class="row-wrap"><span :class="upDot(u)" aria-hidden="true"></span><h2 class="h2 mono" x-text="u.name"></h2><span class="small muted" x-text="ulUsed(u)"></span></div>
+<div class="row"><button class="btn btn-outline btn-sm" type="button" @click="testUplink(u)" :disabled="ulTesting(u)"><svg class="icon spin" aria-hidden="true" x-show="ulTesting(u)"><use href="#i-spin"></use></svg><svg class="icon" aria-hidden="true" x-show="ulIdle(u)"><use href="#i-play"></use></svg>Test</button><button class="btn btn-outline btn-sm" type="button" @click="speedUplink(u)" title="Needs awgx perf agent on the other server">Speed test</button><button class="btn btn-ghost btn-sm" type="button" @click="openRate(u.name, u.rate, true)">Rate</button><button class="btn btn-ghost btn-sm" type="button" @click="editUplink(u)">Edit</button><button class="btn btn-ghost btn-sm danger-btn" type="button" @click="askRemoveUplink(u)">Remove</button></div>
+</div>
+<dl class="card-body kv"><div><dt>Endpoint</dt><dd class="mono" x-text="u.endpoint"></dd></div><div><dt>Address</dt><dd class="mono" x-text="u.address"></dd></div><div><dt>MTU</dt><dd x-text="ulMTU(u)"></dd></div><div><dt>Port</dt><dd class="mono" x-text="ulPort(u)"></dd></div><div><dt>Rate limit</dt><dd x-text="ulRate(u)"></dd></div><div><dt>Last handshake</dt><dd x-text="rel(u.last_handshake)"></dd></div><div><dt>Transfer</dt><dd x-text="ulTransfer(u)"></dd></div><div><dt>Mode</dt><dd x-text="ulMode(u)"></dd></div></dl>
+<div class="card-body pt-0" x-show="ulHasTest(u)"><div class="diff"><template x-for="l in ulTestLines(u)" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div></div>
+</div>
+</template>
+</div>
+
+<div class="page" x-show="egTabIs('xui')">
+<div class="card" x-show="xuiDisconnected">
+<div class="card-head"><div><h2 class="card-title">3x-ui is installed on this server</h2><p class="card-desc">awgx can create a local SOCKS5 inbound in the panel and send peers through Xray.</p></div></div>
+<div class="card-body form"><ol class="olist"><li>awgx creates a SOCKS5 inbound on 127.0.0.1 with a generated password through the panel API. Only the awgx relay connects to it.</li><li>A profile <code>xui</code> is added and the default route of <code x-text="xuiInst"></code> points to it.</li><li>The change is applied and checked through a test peer.</li></ol></div>
+<div class="card-foot row foot-split"><span class="grow">Runs as a background task.</span><button class="btn btn-primary" type="button" @click="openXui"><svg class="icon" aria-hidden="true"><use href="#i-plug"></use></svg>Connect 3x-ui</button></div>
+</div>
+<div class="card" x-show="xuiConnected">
+<div class="card-head"><div class="row-wrap"><h2 class="card-title">3x-ui</h2><span :class="xuiBadge" x-text="xuiBadgeText"></span></div><button class="btn btn-outline btn-sm" type="button" @click="openXuiDisc" x-show="!xs.removing">Disconnect</button></div>
+<div class="card-body pt-0" x-show="xs.removing"><div class="callout callout-warn"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><span x-text="xuiRemovingText"></span></div></div>
+<dl class="card-body kv"><template x-for="r in xuiRows" :key="r.k"><div><dt x-text="r.k"></dt><dd :class="xuiVal(r)" x-text="r.v"></dd></div></template></dl>
+<div class="card-body pt-0" x-show="xuiProblem"><div class="callout callout-fail"><svg class="icon" aria-hidden="true"><use href="#i-x-circle"></use></svg><span x-text="xuiProblem"></span></div></div>
+</div>
+</div>
+
+<div class="card" x-show="egTabIs('history')">
+<div class="card-head"><div><h2 class="card-title">History</h2><p class="card-desc">Every apply is a snapshot. Rolling back applies it again right away and replaces the draft.</p></div></div>
+<div class="list list-top">
+<template x-for="h in history" :key="h.id">
+<div class="hist">
+<div class="list-item hist-row">
+<button class="disclose row grow" type="button" @click="toggleHist(h)" :aria-expanded="histExpanded(h)" :aria-controls="histPanel(h)">
+<svg class="icon chev" aria-hidden="true"><use href="#i-chev"></use></svg><span class="medium" x-text="histTitle(h)"></span><span :class="histClass(h)" x-text="histStatus(h)"></span><span class="badge badge-brand" x-show="histCurrent(h)">applied</span><span class="small muted grow align-end" x-text="histWhen(h)"></span>
+</button>
+<button class="btn btn-ghost btn-sm" type="button" x-show="histCanRoll(h)" @click="askHistRollback(h)" x-text="histRollLabel(h)"></button>
+</div>
+<div class="history-body" :id="histPanel(h)" x-show="histShown(h)">
+<div class="xs muted">Diff</div><div class="diff"><template x-for="l in histDiff(h)" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div>
+<div class="xs muted">Checks</div><div class="diff"><template x-for="l in histChecks(h)" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div>
+</div>
+</div>
+</template>
+</div>
+</div>
+
+<div class="dock" x-show="draftBar" role="region" aria-label="Draft">
+<svg class="icon brand-text" aria-hidden="true"><use href="#i-git"></use></svg>
+<div class="cell-stack grow"><span class="medium" x-text="draftText"></span><span :class="draftNoteClass" x-text="draftNote"></span></div>
+<span class="badge badge-ok mono" x-text="draftAdds"></span><span class="badge badge-fail mono" x-text="draftDels"></span>
+<button class="btn btn-primary btn-sm" type="button" @click="openPlan">Review and apply</button>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('doctor')" aria-labelledby="h-doctor">
+<div class="page-head">
+<div><h1 class="h1" id="h-doctor">Doctor</h1><p class="sub" x-text="doctorWhen"></p></div>
+<button class="btn btn-outline" type="button" @click="runDoctor" :disabled="doctorBusy"><svg :class="doctorSpin" aria-hidden="true"><use href="#i-refresh"></use></svg><span x-text="doctorBtn"></span></button>
+</div>
+<div class="card" x-show="doctorLoaded">
+<div class="card-body row-wrap doctor-sum">
+<span :class="doctorIconClass"><svg class="icon" aria-hidden="true"><use :href="ic(doctorIcon)"></use></svg></span>
+<div class="grow"><div class="h2" x-text="doctorHeadline"></div><div class="small muted"><span class="ok-text medium" x-text="dCounts.ok"></span> ok · <span class="warn-text medium" x-text="dCounts.warn"></span> warn · <span class="fail-text medium" x-text="dCounts.fail"></span> fail</div></div>
+<button class="btn btn-outline btn-sm" type="button" role="checkbox" :aria-checked="fixAll" x-show="hasFixable" @click="fixFlipAll"><span class="box"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>Select all fixes</button>
+</div>
+</div>
+<div class="card" x-show="hasProblems">
+<div class="card-head"><h2 class="card-title">Problems</h2></div>
+<div class="list list-top">
+<template x-for="d in dProblems" :key="d.id">
+<div class="list-item top chk">
+<svg :class="checkClass(d)" aria-hidden="true"><use :href="ic(checkIcon(d))"></use></svg>
+<div class="check grow">
+<span class="row-wrap"><span class="medium mono" x-text="d.id"></span><span class="badge badge-muted" x-text="d.group"></span><span class="sr-only" x-text="d.status"></span></span>
+<span class="check-msg" x-text="d.message"></span>
+<div class="fix" x-show="hasFix(d)">
+<button class="box-btn" type="button" role="checkbox" :aria-checked="fixChecked(d)" :aria-label="fixLabel(d)" @click="fixFlip(d)"><span class="box"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span></button>
+<svg class="icon brand-text" aria-hidden="true"><use href="#i-wand"></use></svg>
+<span class="grow small"><span class="medium">Fix: </span><span x-text="fixDesc(d)"></span></span>
+<button class="btn btn-outline btn-xs" type="button" @click="fixOne(d)" :disabled="jobRunning">Fix</button>
+</div>
+</div>
+</div>
+</template>
+</div>
+</div>
+<div class="card" x-show="doctorLoaded">
+<button class="disclose list-item card-disclose" type="button" @click="toggleOk" :aria-expanded="okExpanded" aria-controls="ok-list">
+<svg class="icon chev" aria-hidden="true"><use href="#i-chev"></use></svg><span class="card-title">Passed</span><span class="badge badge-ok" x-text="dCounts.ok"></span><span class="small muted grow align-end" x-text="okToggleLabel"></span>
+</button>
+<div class="list ok-list" id="ok-list" x-show="okOpen">
+<template x-for="d in dOk" :key="d.id"><div class="list-item top"><svg class="icon ok-text" aria-hidden="true"><use href="#i-check-circle"></use></svg><div class="check"><span class="medium mono" x-text="d.id"></span><span class="check-msg" x-text="d.message"></span></div></div></template>
+</div>
+</div>
+<div class="dock" x-show="fixBar" role="region" aria-label="Selected fixes">
+<svg class="icon brand-text" aria-hidden="true"><use href="#i-wand"></use></svg>
+<div class="cell-stack grow"><span class="medium" x-text="fixBarText"></span><span class="small muted">Runs as a background task, then the checks run again.</span></div>
+<button class="btn btn-ghost btn-sm" type="button" @click="clearFixes">Clear</button>
+<button class="btn btn-primary btn-sm" type="button" @click="fixSelected" :disabled="jobRunning">Apply fixes</button>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('system')" aria-labelledby="h-sys">
+<div class="page-head"><div><h1 class="h1" id="h-sys">System</h1><p class="sub">awgx on <span class="mono" x-text="serverName"></span></p></div></div>
+<div class="settings">
+<nav class="snav" aria-label="System sections">
+<template x-for="t in sysTabs" :key="t.id"><a class="side-link" :href="sysTabHref(t)" :aria-current="sysTabCur(t)"><svg class="icon" aria-hidden="true"><use :href="ic(t.i)"></use></svg><span x-text="t.t"></span></a></template>
+</nav>
+<div class="page">
+
+<div class="page" x-show="sysTabIs('general')">
+<div class="card inst"><div class="card-head"><h2 class="card-title">Versions</h2></div><dl class="card-body kv"><template x-for="r in sysRows" :key="r.k"><div><dt x-text="r.k"></dt><dd :class="r.c" x-text="r.v"></dd></div></template></dl></div>
+<div class="card">
+<div class="card-head"><div class="row-wrap"><h2 class="card-title">awgx updates</h2><span class="badge badge-brand" x-show="hasUpdate">update available</span></div></div>
+<div class="card-body form">
+<p x-text="updateText"></p>
+<div class="row-wrap">
+<button class="btn btn-primary" type="button" x-show="hasUpdate" @click="askUpdateSelf" :disabled="jobRunning"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>Update awgx</button>
+<button class="btn btn-outline" type="button" @click="checkUpdate" :disabled="updBusy"><svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>Check now</button>
+</div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-updchk">Check for updates daily</span><span class="hint">Shows a notice here. Nothing is installed by itself.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-updchk" :aria-checked="updateCheckOn" @click="flipUpdateCheck"></button></div>
+</div>
+</div>
+<div class="card">
+<div class="card-head"><div><h2 class="card-title">Kernel module and tools</h2><p class="card-desc">amneziawg-dkms and amneziawg-tools from the package repository.</p></div></div>
+<div class="card-body"><p class="small muted">Every instance restarts and clients reconnect in a few seconds. On failure the old packages are restored.</p></div>
+<div class="card-foot row foot-split"><span class="grow">Runs as a background task.</span><button class="btn btn-outline" type="button" @click="askUpgradeModules" :disabled="jobRunning">Upgrade module and tools</button></div>
+</div>
+</div>
+
+<div class="page" x-show="sysTabIs('access')">
+<div class="card inst">
+<div class="card-head"><h2 class="card-title">Web access</h2></div>
+<div class="card-body form">
+<dl class="kv"><template x-for="r in webRows" :key="r.k"><div><dt x-text="r.k"></dt><dd :class="r.c" x-text="r.v"></dd></div></template></dl>
+<div class="field"><span class="label">URL to open</span><div class="copyrow"><code class="code code-sm grow" x-text="webUrl"></code><button class="btn btn-outline btn-icon" type="button" @click="copyUrl" aria-label="Copy URL"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg></button></div></div>
+<div class="field"><span class="label">SSH tunnel</span><div class="copyrow"><code class="code code-sm grow" x-text="sys.tunnel"></code><button class="btn btn-outline btn-icon" type="button" @click="copyTunnel" aria-label="Copy SSH command"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg></button></div><p class="hint">Run it on your computer, then open the URL above.</p></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-metrics">Prometheus metrics</span><span class="hint">Serves <code>/metrics</code> on the same port, without sign-in, only to requests from the server itself (127.0.0.1, no proxy headers).</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-metrics" :aria-checked="metricsOn" @click="flipMetrics"></button></div>
+</div>
+<div class="card-foot">The web UI can only be turned off from the server: <code>awgx web disable</code>.</div>
+</div>
+<div class="card">
+<div class="card-head"><div class="row-wrap"><h2 class="card-title">Sign-in</h2><span :class="totpBadge" x-text="totpBadgeText"></span></div><button class="btn btn-outline btn-sm" type="button" @click="openPassword"><svg class="icon" aria-hidden="true"><use href="#i-key"></use></svg>Change password or two-factor</button></div>
+<div class="card-body"><p class="small muted"><span x-text="totpState"></span> Saving a change signs out every other session.</p></div>
+</div>
+</div>
+
+<div class="card" x-show="sysTabIs('backups')">
+<div class="card-head"><div><h2 class="card-title">Backups</h2><p class="card-desc">Instances, keys, peers, egress and settings.<span x-show="sys.backup_dir"> The last <span x-text="sys.keep_backups"></span> are kept in <code x-text="sys.backup_dir"></code>.</span></p></div><button class="btn btn-outline btn-sm" type="button" @click="backupNow"><svg class="icon" aria-hidden="true"><use href="#i-archive"></use></svg>Back up now</button></div>
+<table class="tbl tbl-cards">
+<thead><tr><th scope="col">File</th><th scope="col">Created</th><th scope="col" class="num">Size</th><th scope="col" class="act"><span class="sr-only">Actions</span></th></tr></thead>
+<tbody><template x-for="b in backups" :key="b.name"><tr>
+<td class="span mono break" x-text="b.name"></td><td data-label="Created" class="nowrap" x-text="bkWhen(b)"></td><td data-label="Size" class="num" x-text="bytes(b.size)"></td>
+<td class="act"><div class="acts"><a class="btn btn-ghost btn-sm" :href="bkHref(b)" download :aria-label="bkDownloadLabel(b)"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>Download</a><button class="btn btn-ghost btn-sm danger-btn" type="button" @click="askRestore(b)" :aria-label="bkRestoreLabel(b)"><svg class="icon" aria-hidden="true"><use href="#i-upload"></use></svg>Restore</button></div></td>
+</tr></template></tbody>
+</table>
+<p class="card-body small muted" x-show="noBackups">No backups yet.</p>
+</div>
+
+<div class="card" x-show="sysTabIs('setup')">
+<div class="empty" x-show="suIs('intro')">
+<span class="empty-ico"><svg class="icon" aria-hidden="true"><use href="#i-wand"></use></svg></span>
+<h2 class="h2">Setup wizard</h2>
+<p class="sub measure">Inspects the server, then asks what to change: fixes, old WireGuard setups, the endpoint, new clients and egress. Everything runs at the end as one task.</p>
+<button class="btn btn-primary" type="button" @click="startSetup"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg>Start inspection</button>
+</div>
+<div class="card-body form" x-show="suIs('inspect')" role="status">
+<div class="row"><svg class="icon spin" aria-hidden="true"><use href="#i-spin"></use></svg><span class="medium">Inspecting the server…</span></div>
+<p class="small muted">Runs the health checks and looks up the public IP. This takes 5–20 s.</p>
+<div class="skel"></div><div class="skel skel-2"></div><div class="skel skel-3"></div>
+</div>
+<div class="wiz" x-show="suShowStepper">
+<ol class="vsteps" aria-label="Setup steps"><template x-for="s in suStepper" :key="s.id"><li class="vstep" :data-state="s.state"><span class="step-n" x-text="s.n"></span><span x-text="s.t"></span></li></template></ol>
+<div class="form wiz-main">
+<div class="form" x-show="suIs('pick')">
+<div><h2 class="h2">What to change</h2><p class="small muted">Pick one or more. Suggested items are pre-selected.</p></div>
+<div class="opts opts-1">
+<template x-for="p in setupPicks" :key="p.id">
+<button class="opt-card" type="button" role="checkbox" :aria-checked="suPicked(p)" @click="suFlip(p)">
+<span class="box"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>
+<span class="cell-stack grow"><span class="row-wrap"><span class="medium" x-text="p.t"></span><span class="badge badge-brand" x-show="suSuggest(p)">suggested</span></span><span class="small" x-text="suState(p)"></span><span class="xs muted" x-text="p.d"></span></span>
+</button>
+</template>
+</div>
+</div>
+<div class="form" x-show="suStepIs('check')">
+<h2 class="h2">System check</h2>
+<p class="small muted" x-show="suCheckEmpty">Nothing to fix. Go on.</p>
+<div class="field" x-show="suHasFixes"><span class="label">Fixes</span>
+<template x-for="f in suD.fixes" :key="f.id"><button class="opt-card" type="button" role="checkbox" :aria-checked="suFixChecked(f)" @click="suFixFlip(f)"><span class="box"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span><span class="cell-stack grow"><span class="medium" x-text="f.description"></span><span class="small muted" x-text="f.message"></span></span></button></template>
+</div>
+<div class="field" x-show="suHasLegacy"><span class="label">Old setups</span><p class="hint">The selected setups are removed.</p>
+<template x-for="x in suLegacy" :key="x.i"><button class="opt-card" type="button" role="checkbox" :aria-checked="suLegChecked(x)" @click="suLegFlip(x)"><span class="box"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span><span class="cell-stack grow"><span class="medium"><span x-text="x.kind"></span> <span class="mono" x-text="x.name"></span></span><span class="small muted mono" x-text="x.path"></span></span></button></template>
+<div class="srow"><div class="srow-t"><span class="label" id="l-subk">Back up before removing</span><span class="hint">Archives their files into <code>/var/lib/awgx/backups</code>.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-subk" :aria-checked="suBkOld" @click="suFlipBkOld"></button></div>
+</div>
+</div>
+<div class="form" x-show="suStepIs('endpoint')">
+<h2 class="h2">Endpoint</h2>
+<div class="callout callout-warn" x-show="suNat"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><span x-text="suNatText"></span></div>
+<div class="field"><label class="label" for="su-ep">Address clients connect to</label><div class="copyrow"><input class="input mono" id="su-ep" type="text" x-model="su.endpoint" spellcheck="false"><button class="btn btn-outline" type="button" x-show="suNat" @click="useSuggested">Use <span class="mono" x-text="suD.suggested_endpoint"></span></button></div><p class="hint">An IP address or a host name. The port stays the same.</p><p class="hint warn-text" x-show="suPublicErr" x-text="suPublicErr"></p></div>
+<div class="callout callout-warn" x-show="suEndpointChanged"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span><span x-text="suEndpointImpact"></span></div>
+</div>
+<div class="form" x-show="suStepIs('ipv6')">
+<h2 class="h2">IPv6 inside the tunnel</h2>
+<div class="seg seg-full" role="radiogroup" aria-label="IPv6 inside the tunnel"><button class="seg-item" type="button" role="radio" :aria-checked="suIPv6Is(true)" @click="suSetIPv6(true)">On</button><button class="seg-item" type="button" role="radio" :aria-checked="suIPv6Is(false)" @click="suSetIPv6(false)">Off</button></div>
+<p class="hint">Off: clients get IPv4 only. IPv6 is still captured by the tunnel, so nothing leaks.</p>
+<div class="callout callout-warn" x-show="suNoIPv6Route"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><span>This server has no IPv6 route. Turn IPv6 off.</span></div>
+<div class="callout callout-warn" x-show="suIPv6Changed"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span><span x-text="suIPv6Impact"></span></div>
+</div>
+<div class="form" x-show="suStepIs('clients')">
+<h2 class="h2">Add clients</h2>
+<div class="field"><label class="label" for="su-cl">Names</label><input class="input" id="su-cl" type="text" x-model="su.clients" placeholder="anna-phone, laptop, tv" spellcheck="false"><p class="hint">Comma separated. Latin letters, digits and -.</p></div>
+</div>
+<div class="form" x-show="suStepIs('egress')">
+<h2 class="h2">Egress</h2>
+<div class="opts opts-1" role="radiogroup" aria-label="Egress">
+<template x-for="c in suD.egress_choices" :key="c.value"><button class="opt-card" type="button" role="radio" :aria-checked="suEgChecked(c)" @click="suEgPick(c)"><span class="radio"></span><span class="grow" x-text="c.label"></span></button></template>
+</div>
+<div class="field" x-show="suUplink"><label class="label" for="su-conf">Client .conf of the other server</label><textarea class="input textarea" id="su-conf" x-model="su.conf" rows="8" spellcheck="false" placeholder="[Interface]&#10;PrivateKey = …&#10;&#10;[Peer]&#10;Endpoint = …"></textarea></div>
+<div class="field" x-show="suXui"><label class="label" for="su-tok">3x-ui API token</label><input class="input mono" id="su-tok" type="password" x-model="su.token" autocomplete="off"></div>
+<div class="srow" x-show="suKsShown"><div class="srow-t"><span class="label" id="l-suks">Killswitch</span><span class="hint">Drop traffic when the route is down instead of going direct.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-suks" :aria-checked="suKs" @click="suFlipKs"></button></div>
+</div>
+<div class="form" x-show="suStepIs('review')">
+<h2 class="h2">Review</h2>
+<ul class="sumlist" x-show="suHasSummary"><template x-for="s in suSummaryList" :key="s"><li><svg class="icon brand-text" aria-hidden="true"><use href="#i-check"></use></svg><span x-text="s"></span></li></template></ul>
+<div x-show="suSummaryLoading"><div class="skel"></div><div class="skel skel-2"></div></div>
+<p class="small muted" x-show="suNothing">Nothing to change: the chosen steps already match this server.</p>
+<div class="callout callout-muted"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg><span>Runs as one background task.</span></div>
+</div>
+<p class="error" role="alert" x-show="su.error" x-text="su.error"></p>
+<div class="row wiz-foot">
+<button class="btn btn-outline" type="button" x-show="suIs('step')" @click="suBack">Back</button>
+<span class="grow"></span>
+<button class="btn btn-primary" type="button" x-show="suIs('pick')" @click="suBegin" :disabled="suNoPick">Continue</button>
+<button class="btn btn-primary" type="button" x-show="suStepIs('review')" @click="suRun" :disabled="suRunOff"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg>Run</button>
+<button class="btn btn-primary" type="button" x-show="suStepNotReview" @click="suNext">Continue</button>
+</div>
+</div>
+</div>
+<div class="card-body form" x-show="suIs('run')" role="status">
+<div class="row"><svg class="icon spin" aria-hidden="true"><use href="#i-spin"></use></svg><span class="medium">Setup is running</span></div>
+<p class="small muted" x-text="suRunText"></p>
+<svg class="task-meter wide" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" height="4" :width="suRunPct"></rect></svg>
+<p class="small muted">The task keeps running if you close this page.</p>
+<div><button class="btn btn-outline btn-sm" type="button" @click="showJob">Show log</button></div>
+</div>
+<div class="card-body form" x-show="suIs('result')">
+<div class="callout callout-ok" x-show="suOk"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"></use></svg><span class="medium">Setup finished.</span></div>
+<div class="callout callout-fail" x-show="suFail"><svg class="icon" aria-hidden="true"><use href="#i-x-circle"></use></svg><div><div class="medium">Setup failed</div><div class="small" x-text="suErrText"></div></div></div>
+<div class="field" x-show="suHasClients"><span class="label">New clients</span><div class="row-wrap"><template x-for="n in suResClients" :key="n"><button class="btn btn-outline btn-sm" type="button" @click="suExport(n)"><svg class="icon" aria-hidden="true"><use href="#i-qr"></use></svg><span x-text="n"></span></button></template></div></div>
+<ul class="sumlist" x-show="suNotes.length"><template x-for="n in suNotes" :key="n"><li><svg class="icon muted" aria-hidden="true"><use href="#i-info"></use></svg><span x-text="n"></span></li></template></ul>
+<div class="row-wrap"><button class="btn btn-outline" type="button" @click="showJob">Show log</button><button class="btn btn-ghost" type="button" @click="suRestart">Start over</button></div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="page" x-show="isRoute('journal')" aria-labelledby="h-journal">
+<div class="page-head"><div><h1 class="h1" id="h-journal">Journal</h1><p class="sub">Audit log of changes made with the CLI and web UI.</p></div></div>
+<div class="chips" role="group" aria-label="Filter by action">
+<button class="chip-toggle" type="button" :aria-pressed="jAllPressed" @click="clearJFilter">All</button>
+<template x-for="p in jPrefixes" :key="p"><button class="chip-toggle" type="button" :aria-pressed="jPressed(p)" @click="setJFilter(p)" x-text="p"></button></template>
+</div>
+<template x-for="d in journalDays" :key="d.key">
+<div class="day"><h2 class="day-h" x-text="d.label"></h2>
+<div class="card"><template x-for="e in d.items" :key="e.id">
+<div class="tl-item"><span class="small muted" x-text="e.time"></span>
+<div class="tl-body"><span class="row"><span :class="actionClass(e)" x-text="e.action"></span><span class="xs muted" x-show="e.source" x-text="e.source"></span></span><span class="tl-detail" x-text="e.title"></span><div class="diff diff-fit" x-show="e.isDiff"><template x-for="l in e.diff" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div></div>
+</div>
+</template></div>
+</div>
+</template>
+<div class="card" x-show="journalEmpty"><div class="empty"><p class="sub">No entries for this filter.</p></div></div>
+</section>
+</main>
+</div>
+</div>
+
+<dialog class="dlg" x-ref="addDlg" data-ref="addDlg" aria-labelledby="add-title" @close="onDialogClose" @click="backdrop">
+<form class="dlg-inner" @submit.prevent="submitAdd" novalidate>
+<div class="dlg-head"><h2 class="dlg-title" id="add-title">Add peer</h2><p class="card-desc">Creates keys and an address. The client config opens next.</p></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="dlg-body">
+<div class="field">
+<label class="label" for="f-name">Name</label>
+<input class="input" id="f-name" type="text" autocomplete="off" spellcheck="false" placeholder="pixel-9" x-model="form.name" @blur="touchName" @input="touchName" :aria-invalid="nameInvalid" aria-describedby="f-name-msg" data-autofocus>
+<p class="error" id="f-name-msg" x-show="nameError" x-text="nameError"></p><p class="hint" x-show="nameOk">Latin letters, digits and -, up to 32 characters.</p>
+</div>
+<div class="field" x-show="multi"><label class="label" for="f-inst">Instance</label><select class="input" id="f-inst" x-model="form.instance"><template x-for="n in instanceNames" :key="n"><option :value="n" x-text="n"></option></template></select></div>
+<div class="field"><label class="label" for="f-i1">First packet (I1)</label><select class="input" id="f-i1" x-model="form.i1"><option value="" x-text="inheritLabel"></option><template x-for="o in i1Opts" :key="o.v"><option :value="o.v" x-text="o.t"></option></template></select></div>
+<div class="field" x-show="addQuic"><label class="label" for="f-sni">Server name (SNI)</label><input class="input mono" id="f-sni" type="text" placeholder="the instance SNI" x-model="form.sni" spellcheck="false"></div>
+<div class="field" x-show="addCustom"><label class="label" for="f-cps">CPS string</label><textarea class="input textarea textarea-sm" id="f-cps" rows="3" x-model="form.cps" spellcheck="false" placeholder="<b 0xc0000000><r 16>"></textarea></div>
+<div class="form-2">
+<div class="field"><label class="label" for="f-days">Expires in <span class="opt">(days)</span></label><input class="input" id="f-days" type="text" inputmode="numeric" placeholder="Never" x-model="form.days" :aria-invalid="daysInvalid" aria-describedby="f-days-msg"><p class="error" id="f-days-msg" x-show="daysError" x-text="daysError"></p></div>
+<div class="field"><label class="label" for="f-note">Note <span class="opt">(optional)</span></label><input class="input" id="f-note" type="text" maxlength="80" placeholder="Anna’s phone" x-model="form.note"></div>
+</div>
+<div class="form-2">
+<div class="field"><label class="label" for="f-eg">Route</label><select class="input" id="f-eg" x-model="form.egress"><option value="inherit">Instance default</option><option value="direct">direct</option><template x-for="n in egressChoices" :key="n"><option :value="n" x-text="n"></option></template></select></div>
+<div class="field"><label class="label" for="f-net">Network label <span class="opt">(optional)</span></label><input class="input" id="f-net" type="text" maxlength="32" placeholder="family" x-model="form.net"></div>
+</div>
+<p class="error" role="alert" x-show="formGeneralError" x-text="formGeneralError"></p>
+</div>
+<div class="dlg-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="formBusy"><svg class="icon spin" aria-hidden="true" x-show="formBusy"><use href="#i-spin"></use></svg>Add peer</button></div>
+</form>
+</dialog>
+
+<dialog class="dlg dlg-wide" x-ref="exportDlg" data-ref="exportDlg" aria-labelledby="exp-title" @close="onDialogClose" @click="backdrop">
+<div class="dlg-inner">
+<div class="dlg-head"><h2 class="dlg-title" id="exp-title" x-text="expTitle"></h2><p class="card-desc">Import it in the client app on the device.</p></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="dlg-body">
+<div class="seg seg-full" role="tablist" aria-label="Format" @keydown="tabKey">
+<button class="seg-item" type="button" role="tab" id="tab-qr" aria-controls="pane-qr" :aria-selected="tabSel('qr')" :tabindex="tabIndex('qr')" @click="setTab('qr')" data-autofocus>QR</button>
+<button class="seg-item" type="button" role="tab" id="tab-conf" aria-controls="pane-conf" :aria-selected="tabSel('conf')" :tabindex="tabIndex('conf')" @click="setTab('conf')">.conf</button>
+<button class="seg-item" type="button" role="tab" id="tab-vpn" aria-controls="pane-vpn" :aria-selected="tabSel('vpn')" :tabindex="tabIndex('vpn')" @click="setTab('vpn')">vpn://</button>
+</div>
+<div class="pane-loading" x-show="expLoading" role="status"><svg class="icon spin" aria-hidden="true"><use href="#i-spin"></use></svg><span>Loading config…</span></div>
+<div id="pane-qr" role="tabpanel" aria-labelledby="tab-qr" x-show="expPane('qr')">
+<p class="hint qr-hint" x-show="expMany">Scan the codes one after another.</p>
+<div :class="qrGridClass"><template x-for="(src, i) in expQr" :key="i"><figure><img class="qr" :src="src" :alt="qrAlt(i)" width="220" height="220"><figcaption class="qr-cap" x-show="expMany" x-text="qrCap(i)"></figcaption></figure></template></div>
+</div>
+<div id="pane-conf" role="tabpanel" aria-labelledby="tab-conf" class="form" x-show="expPane('conf')">
+<pre class="code" tabindex="0" aria-label="Client configuration" x-text="expConf"></pre>
+<div><button class="btn btn-primary" type="button" @click="downloadConf"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>Download .conf</button></div>
+</div>
+<div id="pane-vpn" role="tabpanel" aria-labelledby="tab-vpn" class="form" x-show="expPane('vpn')">
+<textarea class="code code-wrap vpn-text" readonly rows="5" aria-label="vpn:// link" :value="expVpn"></textarea>
+<div><button class="btn btn-primary" type="button" @click="copyVpn"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg>Copy</button></div>
+</div>
+</div>
+<div class="card-foot">The client must support AmneziaWG 3.1 (AmneziaVPN 5.0.1.5+, amneziawg-tools 3.1).</div>
+</div>
+</dialog>
+
+<dialog class="sheet" x-ref="peerDlg" data-ref="peerDlg" aria-labelledby="pe-title" @close="onDialogClose">
+<form class="sheet-in" @submit.prevent="savePeer" novalidate>
+<div class="sheet-head">
+<div class="row-wrap"><span :class="dotClass(peSel)" aria-hidden="true"></span><h2 class="dlg-title" id="pe-title" x-text="peTitle"></h2><span :class="peStatusClass" x-text="peStatus"></span></div>
+<p class="card-desc"><span x-text="peSel.address4"></span> · <span x-text="dotLabel(peSel)"></span></p>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="row-wrap sheet-acts"><button class="btn btn-outline btn-sm" type="button" @click="exportPe"><svg class="icon" aria-hidden="true"><use href="#i-qr"></use></svg>Client config</button></div>
+</div>
+<div class="sheet-body">
+<dl class="kv kv-2"><template x-for="r in peRows" :key="r.k"><div><dt x-text="r.k"></dt><dd :class="r.c" x-text="r.v"></dd></div></template></dl>
+<div class="sec">
+<h3 class="sec-h">Labels</h3>
+<div class="form-2">
+<div class="field"><label class="label" for="pe-note">Note</label><input class="input" id="pe-note" type="text" maxlength="80" x-model="pe.note"></div>
+<div class="field"><label class="label" for="pe-net">Network label</label><input class="input" id="pe-net" type="text" maxlength="32" x-model="pe.net" placeholder="family"><p class="hint">Groups peers in filters and stats.</p></div>
+</div>
+</div>
+<div class="sec">
+<h3 class="sec-h">Expiry</h3>
+<p class="small muted" x-text="peExpiryNow"></p>
+<div class="seg seg-wrap" role="radiogroup" aria-label="Expiry"><template x-for="o in expiryOpts" :key="o.v"><button class="seg-item" type="button" role="radio" :aria-checked="expiryChecked(o)" @click="setExpiry(o)" x-text="o.t"></button></template></div>
+<div class="field" x-show="peCustomShown"><label class="label" for="pe-exp">Expires in</label><input class="input input-narrow" id="pe-exp" x-ref="peCustom" type="text" placeholder="45d or 12h" x-model="pe.custom" :aria-invalid="peCustomInvalid"><p class="error" x-show="peCustomError" x-text="peCustomError"></p></div>
+</div>
+<div class="sec">
+<h3 class="sec-h">First packet (I1) <span class="ri" aria-label="changes the client config"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span></h3>
+<p class="small muted" x-text="peI1Now"></p>
+<div class="field"><label class="sr-only" for="pe-i1">First packet</label><select class="input" id="pe-i1" x-model="pe.i1"><option value="keep">Keep as it is</option><option value="inherit">Inherit from instance</option><template x-for="o in i1Opts" :key="o.v"><option :value="o.v" x-text="o.t"></option></template></select></div>
+<div class="field" x-show="peQuic"><label class="label" for="pe-sni">Server name (SNI)</label><input class="input mono" id="pe-sni" type="text" :placeholder="peSniHint" x-model="pe.sni" spellcheck="false"></div>
+<div class="field" x-show="peCustom"><label class="label" for="pe-cps">CPS string</label><textarea class="input textarea textarea-sm" id="pe-cps" rows="3" x-model="pe.cps" spellcheck="false"></textarea></div>
+<div class="callout callout-warn" x-show="peI1Changed"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span><span x-text="peImpact"></span></div>
+</div>
+<div class="sec">
+<h3 class="sec-h">Egress</h3>
+<p class="small muted" x-text="peEgressNow"></p>
+<div class="field"><label class="sr-only" for="pe-eg">Route</label><select class="input" id="pe-eg" x-model="pe.egress"><option value="keep">Keep as it is</option><option value="inherit">Instance default</option><option value="direct">direct</option><template x-for="n in egressChoices" :key="n"><option :value="n" x-text="n"></option></template></select></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-peks">Killswitch</span><span class="hint">Drop traffic when the profile is down.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-peks" :aria-checked="peKs" :disabled="peKsDisabled" @click="togglePeKs"></button></div>
+<p class="hint" x-show="peEgressChanged">Route changes go to the egress draft. Apply them in <a href="#/egress/routes">Egress</a>.</p>
+</div>
+<div class="sec danger-zone">
+<div class="srow"><div class="srow-t"><span class="label" x-text="peToggleLabel"></span><span class="hint" x-text="peToggleDesc"></span></div><button class="btn btn-outline btn-sm" type="button" @click="togglePe"><svg class="icon" aria-hidden="true"><use href="#i-power"></use></svg><span x-text="peToggleLabel"></span></button></div>
+<div class="srow"><div class="srow-t"><span class="label">Delete peer</span><span class="hint">The client stops working immediately.</span></div><button class="btn btn-outline btn-sm danger-btn" type="button" @click="deletePe"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg>Delete</button></div>
+</div>
+<p class="error" role="alert" x-show="pe.error" x-text="pe.error"></p>
+</div>
+<div class="sheet-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="pe.busy"><svg class="icon spin" aria-hidden="true" x-show="pe.busy"><use href="#i-spin"></use></svg>Save changes</button></div>
+</form>
+</dialog>
+
+<dialog :class="isWide" x-ref="instDlg" data-ref="instDlg" aria-labelledby="is-title" @close="onDialogClose">
+<form class="sheet-in" @submit.prevent="isPrimary" novalidate>
+<div class="sheet-head">
+<h2 class="dlg-title" id="is-title" x-text="isTitle"></h2><p class="card-desc" x-text="isDesc"></p>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<ol class="flow flow-full" x-show="isMulti" aria-label="Steps"><template x-for="s in isStepper" :key="s.id"><li class="flow-i" :data-state="s.state"><span class="step-n" x-text="s.n"></span><span x-text="s.t"></span></li></template></ol>
+</div>
+<div class="sheet-body">
+<div class="callout callout-warn" x-show="isEdit"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span><span x-text="curImpact"></span></div>
+<div class="sec" x-show="stepIs('basics')">
+<div class="field"><label class="label" for="is-name">Name</label><input class="input mono" id="is-name" type="text" placeholder="awg1" x-model="is.name" spellcheck="false" :aria-invalid="isInvalid('name')" data-autofocus><p class="error" x-show="isErr('name')" x-text="isErr('name')"></p><p class="hint">The interface name, like awg1: up to 15 lowercase letters, digits, - or _, starting with a letter.</p></div>
+<div class="form-2">
+<div class="field"><label class="label" for="is-port">UDP port <span class="opt">(optional)</span></label><input class="input mono" id="is-port" type="text" inputmode="numeric" placeholder="random" x-model="is.port" :aria-invalid="isInvalid('port')"><p class="error" x-show="isErr('port')" x-text="isErr('port')"></p></div>
+<div class="field"><label class="label" for="is-dns">DNS <span class="opt">(optional)</span></label><input class="input mono" id="is-dns" type="text" placeholder="1.1.1.1, 1.0.0.1" x-model="is.dns"></div>
+</div>
+<div class="field"><label class="label" for="is-ep">Endpoint <span class="opt">(optional)</span></label><input class="input mono" id="is-ep" type="text" x-model="is.endpoint" placeholder="same as the first instance"><p class="hint">The address clients connect to.</p></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-is6">IPv6 inside the tunnel</span><span class="hint">Off: clients get IPv4 only. IPv6 is still captured by the tunnel, so nothing leaks.</span><span class="hint warn-text" x-show="noIPv6Route">This server has no IPv6 route. Keep it off.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-is6" :aria-checked="isIPv6On" @click="flipIsIPv6"></button></div>
+</div>
+<div class="sec" x-show="stepIs('endpoint')">
+<div class="field"><label class="label" for="is-ep2">Endpoint</label><input class="input mono" id="is-ep2" type="text" x-model="is.endpoint" spellcheck="false" :aria-invalid="isInvalid('endpoint')" data-autofocus><p class="error" x-show="isErr('endpoint')" x-text="isErr('endpoint')"></p><p class="hint">IP address or host name clients connect to. Behind NAT use the public address. The port stays the same.</p></div>
+</div>
+<div class="sec" x-show="stepIs('obf')">
+<div class="seg seg-full" role="radiogroup" aria-label="Obfuscation source"><button class="seg-item" type="button" role="radio" :aria-checked="kindChecked('preset')" @click="setKind('preset')">From a preset</button><button class="seg-item" type="button" role="radio" :aria-checked="kindChecked('custom')" @click="setKind('custom')">Custom values</button></div>
+<div class="opts opts-1" role="radiogroup" aria-label="Preset" x-show="isPreset">
+<template x-for="p in presetList" :key="p.name"><button class="opt-card" type="button" role="radio" :aria-checked="presetChecked(p)" @click="pickPreset(p)"><span class="radio"></span><span class="cell-stack grow"><span class="medium" x-text="p.name"></span><span class="small muted" x-text="p.desc"></span></span></button></template>
+<p class="hint">New random values are generated on the server from the preset.</p>
+</div>
+<div class="form" x-show="isCustom">
+<div class="callout callout-fail" role="alert" x-show="hasFails"><svg class="icon" aria-hidden="true"><use href="#i-x-circle"></use></svg><div class="grow list-plain"><div class="medium" x-text="failTitle"></div><template x-for="x in issueFails" :key="x.field"><button class="issue" type="button" @click="focusIssue(x)"><span class="badge badge-fail badge-mono" x-text="x.field"></span><span x-text="x.message"></span></button></template></div></div>
+<div class="callout callout-warn" x-show="hasWarns"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><div class="grow list-plain"><div class="medium">Warnings do not block saving</div><template x-for="x in issueWarns" :key="x.field"><button class="issue" type="button" @click="focusIssue(x)"><span class="badge badge-warn badge-mono" x-text="x.field"></span><span x-text="x.message"></span></button></template></div></div>
+<template x-for="g in obfGroups" :key="g.id">
+<fieldset class="fgroup"><legend x-text="g.title"></legend><p class="hint" x-text="g.desc"></p>
+<div :class="obfGroupClass(g)"><template x-for="f in g.fields" :key="f.k">
+<div :class="obfFieldClass(f)"><label class="label mono" :for="obfId(f)" x-text="f.l"></label><input class="input mono" type="text" spellcheck="false" :id="obfId(f)" :data-k="f.k" :value="obfVal(f)" :placeholder="f.p" @input="obfInput" :aria-invalid="obfInvalid(f)" :aria-describedby="obfDesc(f)"><p :id="obfDesc(f)" :class="obfMsgClass(f)" x-text="obfMsg(f)"></p></div>
+</template></div>
+</fieldset>
+</template>
+<fieldset class="fgroup"><legend>Options</legend>
+<template x-for="t in obfToggles" :key="t.k"><div class="srow"><div class="srow-t"><span class="label" :id="toggleId(t)" x-text="t.t"></span><span class="hint" x-text="t.d"></span></div><button class="switch" type="button" role="switch" :aria-labelledby="toggleId(t)" :aria-checked="toggleOn(t)" @click="flipToggle(t)"></button></div></template>
+</fieldset>
+</div>
+</div>
+<div class="sec" x-show="stepIs('i1')">
+<div class="opts" role="radiogroup" aria-label="First packet profile"><template x-for="o in i1Opts" :key="o.v"><button class="opt-card" type="button" role="radio" :aria-checked="i1Checked(o)" @click="pickI1(o)"><span class="radio"></span><span class="cell-stack grow"><span class="medium mono" x-text="o.t"></span><span class="small muted" x-text="o.d"></span></span></button></template></div>
+<div class="field" x-show="isQuic"><label class="label" for="i1-sni">Server name (SNI)</label><input class="input mono" id="i1-sni" type="text" x-model="is.sni" placeholder="www.microsoft.com" spellcheck="false" :aria-invalid="isInvalid('sni')"><p class="error" x-show="isErr('sni')" x-text="isErr('sni')"></p><p class="hint">quic looks most natural on port 443.</p></div>
+<div class="field" x-show="isCps"><label class="label" for="i1-cps">CPS string</label><textarea class="input textarea textarea-sm" id="i1-cps" rows="4" x-model="is.cps" spellcheck="false" placeholder="<b 0xc0000000 0108><r 8><b 0x00><r 1100>"></textarea></div>
+</div>
+<div class="sec" x-show="stepIs('review')">
+<dl class="kv kv-2"><template x-for="r in isReview" :key="r.k"><div><dt x-text="r.k"></dt><dd x-text="r.v"></dd></div></template></dl>
+<div class="srow"><div class="srow-t"><span class="label" id="l-st">Self-test</span><span class="hint">Starts a test peer in a network namespace and waits for a handshake. Rolled back if it fails.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-st" :aria-checked="selftestOn" @click="flipSelftest"></button></div>
+<div class="callout callout-muted"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg><span>Runs as a background task. You can close this sheet and follow the progress in the task panel.</span></div>
+</div>
+<p class="error" role="alert" x-show="isGeneralError" x-text="isGeneralError"></p>
+</div>
+<div class="sheet-foot">
+<button class="btn btn-outline" type="button" x-show="isFirst" @click="closeSelf">Cancel</button>
+<button class="btn btn-outline" type="button" x-show="isNotFirst" @click="isBack">Back</button>
+<button class="btn btn-primary" type="submit" :disabled="is.busy"><svg class="icon spin" aria-hidden="true" x-show="is.busy"><use href="#i-spin"></use></svg><span x-text="isPrimaryLabel"></span></button>
+</div>
+</form>
+</dialog>
+
+<dialog class="sheet" x-ref="planDlg" data-ref="planDlg" aria-labelledby="plan-title" @close="onDialogClose">
+<div class="sheet-in">
+<div class="sheet-head">
+<h2 class="dlg-title" id="plan-title">Review and apply</h2><p class="card-desc" x-text="egStatusText"></p>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<ol class="flow flow-full" aria-label="Change flow"><template x-for="f in flow" :key="f.n"><li class="flow-i" :data-state="flowState(f)"><span class="step-n" x-text="f.n"></span><span x-text="f.t"></span></li></template></ol>
+</div>
+<div class="sheet-body">
+<div class="sec" x-show="hasPlan"><h3 class="sec-h">Plan</h3><div class="diff" aria-label="Plan diff"><template x-for="l in planDiff" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div></div>
+<div class="sec" x-show="showDrift"><h3 class="sec-h">Live rules drifted</h3><div class="diff" aria-label="Drift"><template x-for="l in driftLines" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div></div>
+<div class="callout callout-muted" x-show="noChanges"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"></use></svg><div><div class="medium">No changes</div><div class="small muted">The draft matches the applied snapshot.</div></div></div>
+<div class="callout callout-warn" x-show="hasWarnings"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><ul class="list-plain"><template x-for="w in planWarnings" :key="w"><li x-text="w"></li></template></ul></div>
+<div class="callout callout-fail" role="alert" x-show="hasIssues"><svg class="icon" aria-hidden="true"><use href="#i-x-circle"></use></svg><div class="list-plain"><div class="medium">Errors block the apply</div><ul class="list-plain"><template x-for="w in planIssues" :key="w"><li x-text="w"></li></template></ul></div></div>
+<div class="sec" x-show="showResult"><h3 class="sec-h">Result checks</h3><div class="diff"><template x-for="l in applyResult" :key="l.id"><div :class="l.cls" x-text="l.text"></div></template></div></div>
+<div class="callout callout-warn" role="alert" x-show="hasApplyWarn"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><div class="grow" x-text="applyWarn"></div></div>
+</div>
+<div class="sheet-foot">
+<span class="small muted grow" id="apply-reason" x-text="applyReason" x-show="planIdle"></span>
+<button class="btn btn-outline" type="button" @click="undoApply" x-show="hasApplyWarn" :disabled="!canUndo" x-text="undoLabel"></button>
+<button class="btn btn-primary" type="button" @click="applyEgress" :disabled="applyDisabled" aria-describedby="apply-reason" x-show="planIdle"><svg class="icon spin" aria-hidden="true" x-show="applyBusy"><use href="#i-spin"></use></svg><svg class="icon" aria-hidden="true" x-show="applyIdle"><use href="#i-play"></use></svg>Apply</button>
+</div>
+</div>
+</dialog>
+
+<dialog class="sheet" x-ref="asgDlg" data-ref="asgDlg" aria-labelledby="asg-title" @close="onDialogClose">
+<form class="sheet-in" @submit.prevent="submitAssign" novalidate>
+<div class="sheet-head"><h2 class="dlg-title" id="asg-title">Assign peers</h2><p class="card-desc">Send several peers through one route. The change goes to the draft.</p><button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+<div class="sheet-body">
+<div class="field" x-show="multi"><label class="label" for="asg-inst">Instance</label><select class="input" id="asg-inst" x-model="asg.instance" @change="asgInst"><template x-for="n in instanceNames" :key="n"><option :value="n" x-text="n"></option></template></select></div>
+<div class="field"><div class="row foot-split"><span class="label">Peers</span><button class="btn btn-ghost btn-xs" type="button" role="checkbox" :aria-checked="asgAll" @click="asgFlipAll">Select all</button></div>
+<div class="checklist"><template x-for="p in asgPeers" :key="p.name"><button class="check-row" type="button" role="checkbox" :aria-checked="asgChecked(p)" @click="asgFlip(p)"><span class="box"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span><span class="medium grow" x-text="p.name"></span><span class="xs muted mono" x-text="asgRoute(p)"></span></button></template></div>
+</div>
+<div class="field"><label class="label" for="asg-route">Route</label><select class="input" id="asg-route" x-model="asg.profile"><option value="inherit">Instance default (remove override)</option><template x-for="o in routeOptions" :key="o"><option :value="o" x-text="o"></option></template></select></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-asgks">Killswitch</span><span class="hint">Drop traffic when the profile is down. Not available for direct.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-asgks" :aria-checked="asgKs" :disabled="asgKsDisabled" @click="asgFlipKs"></button></div>
+<p class="error" role="alert" x-show="asg.error" x-text="asg.error"></p>
+</div>
+<div class="sheet-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="asg.busy" x-text="asgCount"></button></div>
+</form>
+</dialog>
+
+<dialog class="sheet" x-ref="profDlg" data-ref="profDlg" aria-labelledby="pf-title" @close="onDialogClose">
+<form class="sheet-in" @submit.prevent="saveProfile" novalidate>
+<div class="sheet-head"><h2 class="dlg-title" id="pf-title" x-text="pfTitle"></h2><p class="card-desc">Saved to the draft. Apply it on the Egress page.</p><button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+<div class="sheet-body">
+<div class="field"><label class="label" for="pf-name">Name</label><input class="input mono" id="pf-name" type="text" x-model="pf.name" :disabled="pf.edit" spellcheck="false" placeholder="via-b" :aria-invalid="pfInvalid('name')" data-autofocus><p class="error" x-show="pfErr('name')" x-text="pfErr('name')"></p><p class="hint" x-show="pfNew">Lowercase letters, digits and -, starting with a letter.</p></div>
+<div class="field" x-show="pfTyped"><span class="label">Type</span><div class="seg seg-full" role="radiogroup" aria-label="Type"><button class="seg-item" type="button" role="radio" :aria-checked="pfKind('iface')" @click="setPfKind('iface')">Interfaces (iface)</button><button class="seg-item" type="button" role="radio" :aria-checked="pfKind('socks5')" @click="setPfKind('socks5')">SOCKS5 proxy</button></div></div>
+<div class="field" x-show="pfIface">
+<span class="label">Interfaces in failover order</span>
+<ol class="hops"><template x-for="x in pfHops" :key="x.h"><li class="hop"><span class="step-n" x-text="x.n"></span><span class="mono medium grow" x-text="x.h"></span><span class="xs muted" x-text="x.label"></span>
+<button class="btn btn-ghost btn-icon btn-sm" type="button" @click="hopUp(x)" :disabled="hopFirst(x)" :aria-label="hopUpLabel(x)"><svg class="icon" aria-hidden="true"><use href="#i-chev-up"></use></svg></button>
+<button class="btn btn-ghost btn-icon btn-sm" type="button" @click="hopDown(x)" :disabled="hopLast(x)" :aria-label="hopDownLabel(x)"><svg class="icon" aria-hidden="true"><use href="#i-chev-down"></use></svg></button>
+<button class="btn btn-ghost btn-icon btn-sm danger-btn" type="button" @click="hopRemove(x)" :aria-label="hopRmLabel(x)"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button></li></template></ol>
+<p class="hint" x-show="pfNoHops">No interfaces yet.</p>
+<div class="copyrow"><input class="input mono" type="text" x-model="pf.hop" @keydown="hopKey" placeholder="interface name" aria-label="Interface name" :aria-invalid="pfInvalid('hops')"><button class="btn btn-outline" type="button" @click="addHopTyped">Add</button></div>
+<div class="chips"><template x-for="s in pfSuggest" :key="s.name"><button class="chip-toggle" type="button" @click="addHop(s)"><span class="mono" x-text="s.name"></span> <span class="xs" x-text="s.d"></span></button></template></div>
+<p class="error" x-show="pfErr('hops')" x-text="pfErr('hops')"></p>
+</div>
+<div class="form" x-show="pfSocks">
+<div class="field"><label class="label" for="pf-socks">Server</label><input class="input mono" id="pf-socks" type="text" x-model="pf.socks" placeholder="127.0.0.1:1080" :aria-invalid="pfInvalid('socks')"><p class="error" x-show="pfErr('socks')" x-text="pfErr('socks')"></p><p class="hint">IP:PORT.</p></div>
+<div class="form-2">
+<div class="field"><label class="label" for="pf-user">User <span class="opt">(optional)</span></label><input class="input" id="pf-user" type="text" x-model="pf.user" autocomplete="off"></div>
+<div class="field"><label class="label" for="pf-pass">Password</label><input class="input" id="pf-pass" type="password" x-model="pf.password" autocomplete="new-password"><p class="hint" x-text="pfPwHint"></p></div>
+</div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-pfudp">UDP</span><span class="hint">The server supports UDP ASSOCIATE. Off: UDP of peers does not work.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-pfudp" :aria-checked="pfUdp" @click="flipPfUdp"></button></div>
+</div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-pfdns">DNS through this egress</span><span class="hint">Redirects DNS of routed peers to the resolver through this profile.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-pfdns" :aria-checked="pfDns" @click="flipPfDns"></button></div>
+<div class="field"><label class="label" for="pf-fb">When the profile is down</label><select class="input" id="pf-fb" x-model="pf.fallback"><template x-for="o in pfFallbacks" :key="o.v"><option :value="o.v" x-text="o.t"></option></template></select><p class="hint">Routes with killswitch always drop.</p></div>
+<p class="error" role="alert" x-show="pfGeneralError" x-text="pfGeneralError"></p>
+</div>
+<div class="sheet-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="pf.busy">Save to draft</button></div>
+</form>
+</dialog>
+
+<dialog class="sheet" x-ref="ulDlg" data-ref="ulDlg" aria-labelledby="ul-title" @close="onDialogClose">
+<form class="sheet-in" @submit.prevent="saveUplink" novalidate>
+<div class="sheet-head"><h2 class="dlg-title" id="ul-title" x-text="ulTitle"></h2><p class="card-desc">A client interface to another AmneziaWG server, for cascades.</p><button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+<div class="sheet-body" x-show="ulForm">
+<div class="field"><label class="label" for="ul-name">Name</label><input class="input mono" id="ul-name" type="text" x-model="ul.name" placeholder="awg1" spellcheck="false" :readonly="ulEditing" :aria-invalid="ulInvalid('name')" data-autofocus><p class="error" x-show="ulErr('name')" x-text="ulErr('name')"></p></div>
+<div class="field"><label class="label" for="ul-conf" x-text="ulConfLabel"></label><textarea class="input textarea" id="ul-conf" rows="14" x-model="ul.conf" spellcheck="false" :aria-invalid="ulInvalid('conf')" placeholder="[Interface]&#10;PrivateKey = …&#10;Address = 10.135.94.6/32&#10;Jc = 4&#10;…&#10;&#10;[Peer]&#10;PublicKey = …&#10;Endpoint = 192.168.1.242:26374&#10;AllowedIPs = 0.0.0.0/0, ::/0"></textarea><p class="error" x-show="ulErr('conf')" x-text="ulErr('conf')"></p><p class="hint" x-text="ulConfHint"></p></div>
+<div class="field" x-show="ulEditing"><label class="label" for="ul-mtu" x-text="ulMTULabel"></label><input class="input mono" id="ul-mtu" type="text" inputmode="numeric" x-model="ul.mtu" :placeholder="ulMTUHolder" :aria-invalid="ulInvalid('mtu')"><p class="error" x-show="ulErr('mtu')" x-text="ulErr('mtu')"></p><p class="hint">This server's link MTU minus 60 bytes and the S4 of the other server. Clients routed through the uplink need this MTU or lower.</p></div>
+<div class="field"><label class="label" for="ul-port">Local UDP port (empty: random)</label><input class="input mono" id="ul-port" type="text" inputmode="numeric" x-model="ul.port" :placeholder="ulPortHolder" :aria-invalid="ulInvalid('port')"><p class="error" x-show="ulErr('port')" x-text="ulErr('port')"></p><p class="hint">The port this server sends from. Providers hash paths by ports, so one port can lose UDP where another does not; a fixed port survives restarts and upgrades.</p></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-routed">Routed, no NAT</span><span class="hint">Only when the other server routes this server’s client subnets back.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-routed" :aria-checked="ulRouted" @click="flipUlRouted"></button></div>
+<p class="error" role="alert" x-show="ulGeneralError" x-text="ulGeneralError"></p>
+</div>
+<div class="sheet-body" x-show="ulDone">
+<div class="callout callout-ok"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"></use></svg><span>Uplink <span class="mono" x-text="ul.name"></span> <span x-text="ulDoneText"></span></span></div>
+<div class="callout callout-warn"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><ul class="list-plain"><template x-for="w in ul.warnings" :key="w"><li x-text="w"></li></template></ul></div>
+<p class="small muted">Use it in an iface profile to route peers through it.</p>
+</div>
+<div class="sheet-foot">
+<button class="btn btn-outline" type="button" @click="closeSelf" x-show="ulForm">Cancel</button>
+<button class="btn btn-primary" type="submit" :disabled="ul.busy" x-show="ulForm"><svg class="icon spin" aria-hidden="true" x-show="ul.busy"><use href="#i-spin"></use></svg><span x-text="ulSubmit"></span></button>
+<button class="btn btn-primary" type="button" @click="closeSelf" x-show="ulDone">Done</button>
+</div>
+</form>
+</dialog>
+
+<dialog class="dlg" x-ref="xuiDlg" data-ref="xuiDlg" aria-labelledby="xc-title" @close="onDialogClose" @click="backdrop">
+<form class="dlg-inner" @submit.prevent="connectXui" novalidate>
+<div class="dlg-head"><h2 class="dlg-title" id="xc-title">Connect 3x-ui</h2><p class="card-desc">Creates a local SOCKS5 inbound and routes <code x-text="xcInst"></code> into Xray and applies the egress right away.</p></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="dlg-body">
+<div class="field" x-show="multi"><label class="label" for="xc-inst">Instance</label><select class="input" id="xc-inst" x-model="xc.instance"><template x-for="n in instanceNames" :key="n"><option :value="n" x-text="n"></option></template></select></div>
+<div class="field" x-show="xcToken"><label class="label" for="xc-tok">API token</label><input class="input mono" id="xc-tok" type="password" x-model="xc.token" autocomplete="off" data-autofocus><p class="hint" x-text="xcTokenHint"></p></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-xcfb">Use the fallback token</span><span class="hint">Regenerates the panel’s cli token. Other tools that use it must be updated.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-xcfb" :aria-checked="xcFallback" @click="flipXcFallback"></button></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-xcks">Killswitch</span><span class="hint">Drop traffic when Xray is down instead of going direct.</span></div><button class="switch" type="button" role="switch" aria-labelledby="l-xcks" :aria-checked="xcKs" @click="flipXcKs"></button></div>
+<p class="error" role="alert" x-show="xc.error" x-text="xc.error"></p>
+</div>
+<div class="dlg-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="xc.busy">Connect</button></div>
+</form>
+</dialog>
+
+<dialog class="dlg" x-ref="xdDlg" data-ref="xdDlg" aria-labelledby="xd-title" @close="onDialogClose" @click="backdrop">
+<form class="dlg-inner" @submit.prevent="disconnectXui" novalidate>
+<div class="dlg-head"><h2 class="dlg-title" id="xd-title">Disconnect 3x-ui</h2><p class="card-desc">Moves its routes back to direct and applies the egress right away.</p></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="dlg-body">
+<div class="field"><span class="label">Routes that move to direct</span><ul class="sumlist"><template x-for="l in xuiRoutes" :key="l"><li x-text="l"></li></template></ul><p class="hint" x-show="!xuiRoutes.length">No route uses xui.</p></div>
+<div class="srow"><div class="srow-t"><span class="label" id="l-xddel">Delete the inbound from 3x-ui</span><span class="hint" x-text="xdHint"></span></div><button class="switch" type="button" role="switch" aria-labelledby="l-xddel" :aria-checked="xdDelete" @click="flipXdDelete"></button></div>
+<p class="error" role="alert" x-show="xd.error" x-text="xd.error"></p>
+</div>
+<div class="dlg-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button :class="xdBtn" type="submit" :disabled="xd.busy">Disconnect</button></div>
+</form>
+</dialog>
+
+<dialog class="sheet" x-ref="pwDlg" data-ref="pwDlg" aria-labelledby="pw-title" @close="onDialogClose">
+<form class="sheet-in" @submit.prevent="savePassword" novalidate>
+<div class="sheet-head"><h2 class="dlg-title" id="pw-title">Password and two-factor</h2><p class="card-desc">Saving signs out every other session.</p><button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+<div class="sheet-body">
+<div class="field"><label class="label" for="pw-cur">Current password</label><input class="input" id="pw-cur" type="password" autocomplete="current-password" x-model="pw.current" :aria-invalid="pwInvalid('current')" data-autofocus><p class="error" x-show="pwErr('current')" x-text="pwErr('current')"></p></div>
+<div class="sec"><h3 class="sec-h">New password <span class="opt small muted">optional</span></h3>
+<div class="form-2">
+<div class="field"><label class="label" for="pw-new">New password</label><input class="input" id="pw-new" type="password" autocomplete="new-password" x-model="pw.password" :aria-invalid="pwInvalid('password')"><p class="error" x-show="pwErr('password')" x-text="pwErr('password')"></p></div>
+<div class="field"><label class="label" for="pw-rep">Repeat</label><input class="input" id="pw-rep" type="password" autocomplete="new-password" x-model="pw.repeat" :aria-invalid="pwInvalid('repeat')"><p class="error" x-show="pwErr('repeat')" x-text="pwErr('repeat')"></p></div>
+</div>
+</div>
+<div class="sec"><h3 class="sec-h">Two-factor (TOTP)</h3>
+<div class="seg seg-full" role="radiogroup" aria-label="Two-factor"><template x-for="o in totpOpts" :key="o.v"><button class="seg-item" type="button" role="radio" :aria-checked="totpChecked(o)" @click="setTotp(o)" x-text="o.t"></button></template></div>
+<div class="totp" x-show="pwNew">
+<template x-if="pwNew"><img class="qr" :src="pw.qr" alt="QR code for the authenticator app" width="180" height="180"></template>
+<div class="form grow">
+<p class="small">Scan the code with an authenticator app, or enter the secret by hand.</p>
+<div class="copyrow"><code class="code code-sm grow break" x-text="pw.secret"></code><button class="btn btn-outline btn-icon" type="button" @click="copySecret" aria-label="Copy secret"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg></button></div>
+<div class="field"><label class="label" for="pw-code">6-digit code from the app</label><input class="input input-mono input-narrow" id="pw-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000" :value="pw.code" @input="onTotpCode" :aria-invalid="pwInvalid('code')"><p class="error" x-show="pwErr('code')" x-text="pwErr('code')"></p></div>
+</div>
+</div>
+<div class="callout callout-warn" x-show="pwOff"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><span>Only the password protects the web UI after this.</span></div>
+</div>
+<p class="error" role="alert" x-show="pwGeneralError" x-text="pwGeneralError"></p>
+</div>
+<div class="sheet-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="pw.busy">Save</button></div>
+</form>
+</dialog>
+
+<dialog class="dlg" x-ref="rateDlg" data-ref="rateDlg" aria-labelledby="rate-title" @close="onDialogClose" @click="backdrop">
+<form class="dlg-inner" @submit.prevent="saveRate" novalidate>
+<div class="dlg-head"><h2 class="dlg-title" id="rate-title">Rate limit of <span class="mono" x-text="rt.name"></span></h2><p class="card-desc" x-text="rtWhat"></p></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="dlg-body">
+<div class="field"><label class="label" for="rate-value">Mbit/s (empty: no limit)</label><input class="input mono" id="rate-value" type="text" inputmode="numeric" x-model="rt.value" placeholder="240" :aria-invalid="rtInvalid" data-autofocus><p class="hint">CAKE shaper. Set it a bit below the speed where loss starts, then check with the uplink speed test.</p></div>
+<p class="error" role="alert" x-show="rt.error" x-text="rt.error"></p>
+</div>
+<div class="dlg-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="rt.busy"><svg class="icon spin" aria-hidden="true" x-show="rt.busy"><use href="#i-spin"></use></svg>Save</button></div>
+</form>
+</dialog>
+
+<dialog class="dlg" x-ref="mtuDlg" data-ref="mtuDlg" aria-labelledby="mtu-title" @close="onDialogClose" @click="backdrop">
+<form class="dlg-inner" @submit.prevent="saveMTU" novalidate>
+<div class="dlg-head"><h2 class="dlg-title" id="mtu-title">Tunnel MTU</h2><p class="card-desc">Used by the server interface and by every client config of this instance.</p></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn dlg-x" type="button" @click="closeSelf" aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+<div class="dlg-body">
+<div class="srow"><div class="srow-t"><span class="label" id="l-mtu-auto">Automatic</span><span class="hint" x-text="mtAutoText"></span></div><button class="switch" type="button" role="switch" aria-labelledby="l-mtu-auto" :aria-checked="mtAutoOn" @click="flipMtAuto"></button></div>
+<div class="field" x-show="mtManual"><label class="label" for="mtu-value">MTU</label><input class="input mono" id="mtu-value" type="text" inputmode="numeric" x-model="mt.value" :placeholder="mtHolder" :aria-invalid="mtInvalid" data-autofocus><p class="hint">Set it lower when the path is narrower than this server's link, for example behind a cascade uplink.</p></div>
+<div class="callout callout-warn"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span><span x-text="curImpact"></span></div>
+<p class="error" role="alert" x-show="mt.error" x-text="mt.error"></p>
+</div>
+<div class="dlg-foot"><button class="btn btn-outline" type="button" @click="closeSelf">Cancel</button><button class="btn btn-primary" type="submit" :disabled="mt.busy"><svg class="icon spin" aria-hidden="true" x-show="mt.busy"><use href="#i-spin"></use></svg>Save</button></div>
+</form>
+</dialog>
+
+<dialog class="dlg" x-ref="cfDlg" data-ref="cfDlg" :role="cfRole" aria-labelledby="cf-title" aria-describedby="cf-desc" @close="onDialogClose" @click="backdrop">
+<form class="dlg-inner" @submit.prevent="cfGo" novalidate>
+<div class="dlg-head"><h2 class="dlg-title" id="cf-title" x-text="cf.title"></h2><p class="card-desc" id="cf-desc" x-text="cf.text"></p></div>
+<div class="dlg-body" x-show="cfBody">
+<div class="callout callout-warn" x-show="cfImpact"><span class="ri" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-rotate"></use></svg></span><span x-text="cf.impact"></span></div>
+<div class="field" x-show="cfTyped"><label class="label" for="cf-in">Type <code x-text="cf.typed"></code> to confirm</label><input class="input mono" id="cf-in" type="text" autocomplete="off" spellcheck="false" x-model="cf.input" :data-autofocus="cfTyped"></div>
+<p class="error" role="alert" x-show="cf.error" x-text="cf.error"></p>
+</div>
+<div class="dlg-foot dlg-foot-top"><button class="btn btn-outline" type="button" @click="closeSelf" :data-autofocus="cfNotTyped">Cancel</button><button :class="cfBtnClass" type="submit" :disabled="cfBlocked"><svg class="icon spin" aria-hidden="true" x-show="cf.busy"><use href="#i-spin"></use></svg><span x-text="cf.label"></span></button></div>
+</form>
+</dialog>
+
+<div class="corner">
+<div class="toasts" aria-live="polite" aria-relevant="additions">
+<template x-for="t in toasts" :key="t.id">
+<div :class="toastClass(t)" role="status">
+<svg class="icon" aria-hidden="true"><use :href="ic(toastIcon(t))"></use></svg>
+<span class="grow"><span x-text="t.text"></span> <a :href="t.href" x-show="t.href" x-text="t.link"></a></span>
+<button class="btn btn-ghost btn-icon btn-xs muted-btn" type="button" @click="dismissToast(t)" aria-label="Dismiss"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"></use></svg></button>
+</div>
+</template>
+</div>
+<section class="task" x-show="jobShown" role="region" aria-labelledby="task-title">
+<div class="task-head">
+<svg class="icon spin brand-text" aria-hidden="true" x-show="jobRunning"><use href="#i-spin"></use></svg>
+<svg class="icon ok-text" aria-hidden="true" x-show="jobOk"><use href="#i-check-circle"></use></svg>
+<svg class="icon fail-text" aria-hidden="true" x-show="jobFailed"><use href="#i-x-circle"></use></svg>
+<div class="cell-stack grow"><span class="medium" id="task-title" x-text="jobTitle"></span><span class="small muted" aria-live="polite" x-text="jobStep"></span></div>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn" type="button" @click="hideJob" x-show="jobRunning" aria-label="Hide task panel"><svg class="icon" aria-hidden="true"><use href="#i-chev-down"></use></svg></button>
+<button class="btn btn-ghost btn-icon btn-sm muted-btn" type="button" @click="dismissJob" x-show="jobDone" aria-label="Close task panel"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg></button>
+</div>
+<svg :class="jobMeterClass" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" height="4" :width="jobPct"></rect></svg>
+<p class="error task-err" x-show="jobFailed" x-text="jobError"></p>
+<pre class="log" x-ref="jobLog" tabindex="0" aria-label="Task log" x-text="jobLogText"></pre>
+<div class="task-foot">
+<span class="xs muted grow" x-show="jobRunning">Keeps running if you close the page.</span>
+<button class="btn btn-ghost btn-sm" type="button" @click="copyLog" x-show="jobDone"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg>Copy log</button>
+</div>
+</section>
+</div>
+
+</body>
+</html>
