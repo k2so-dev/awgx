@@ -1,6 +1,6 @@
 module github.com/k2so-dev/awgx
 
-go 1.26.6
+go 1.27.3
 
 require (
 	filippo.io/age v1.3.2
