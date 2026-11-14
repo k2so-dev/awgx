@@ -12,11 +12,13 @@ import (
 	"net/netip"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/k2so-dev/awgx/internal/core"
 	"github.com/k2so-dev/awgx/internal/doctor"
 	"github.com/k2so-dev/awgx/internal/webconf"
+	"golang.org/x/sys/unix"
 )
 
 const (
@@ -56,7 +58,7 @@ func New(app *core.App, log *slog.Logger) *Server {
 }
 
 func (s *Server) Run(ctx context.Context, listen string) error {
-	l, err := net.Listen("tcp", listen)
+	l, err := Listen(ctx, listen)
 	if err != nil {
 		return err
 	}
@@ -79,6 +81,21 @@ func (s *Server) Run(ctx context.Context, listen string) error {
 		return err
 	}
 	return nil
+}
+
+func Listen(ctx context.Context, addr string) (net.Listener, error) {
+	lc := net.ListenConfig{Control: func(network, _ string, c syscall.RawConn) error {
+		level, opt := unix.SOL_IP, unix.IP_FREEBIND
+		if network == "tcp6" {
+			level, opt = unix.SOL_IPV6, unix.IPV6_FREEBIND
+		}
+		var serr error
+		if err := c.Control(func(fd uintptr) { serr = unix.SetsockoptInt(int(fd), level, opt, 1) }); err != nil {
+			return err
+		}
+		return serr
+	}}
+	return lc.Listen(ctx, "tcp", addr)
 }
 
 func (s *Server) Handler() http.Handler {

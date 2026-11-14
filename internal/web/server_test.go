@@ -1,8 +1,10 @@
 package web
 
 import (
+	"context"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
@@ -165,5 +167,24 @@ func TestSecureCookieOnlyOverHTTPS(t *testing.T) {
 	r.Header.Set("X-Forwarded-Proto", "https")
 	if !s.secure(r) {
 		t.Error("HTTPS behind a proxy must set Secure")
+	}
+}
+
+func TestListenAddressNotYetOnHost(t *testing.T) {
+	for _, addr := range []string{"192.0.2.1:0", "[2001:db8::1]:0"} {
+		t.Run(addr, func(t *testing.T) {
+			if strings.HasPrefix(addr, "[") {
+				if l, err := net.Listen("tcp6", "[::1]:0"); err != nil {
+					t.Skip("no IPv6")
+				} else {
+					l.Close()
+				}
+			}
+			l, err := Listen(context.Background(), addr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			l.Close()
+		})
 	}
 }
