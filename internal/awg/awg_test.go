@@ -34,7 +34,7 @@ func TestParseDumpOldTools(t *testing.T) {
 }
 
 func TestSupports31(t *testing.T) {
-	for v, want := range map[string]bool{"3.1.20260812": true, "3.1.20260812-dirty": true, "3.0.20260805": false, "1.0.20260618": false, "4.0": true, "": false} {
+	for v, want := range map[string]bool{"3.1.20260812": true, "3.1.20260812-dirty": true, "3.1.20261113-02": true, "3.1.20261113+git": true, "3.0.20261113-02": false, "3.0.20260805": false, "1.0.20260618": false, "4.0": true, "": false} {
 		if Supports31(v) != want {
 			t.Errorf("Supports31(%q) != %v", v, want)
 		}

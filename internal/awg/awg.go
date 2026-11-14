@@ -132,7 +132,9 @@ func KernelModuleVersion() string {
 }
 
 func Supports31(version string) bool {
-	return semver.Compare("v"+strings.TrimPrefix(strings.TrimSpace(version), "v"), "v3.1.0") >= 0
+	v, _, _ := strings.Cut(strings.TrimPrefix(strings.TrimSpace(version), "v"), "+")
+	v, _, _ = strings.Cut(v, "-")
+	return semver.Compare("v"+v, "v3.1.0") >= 0
 }
 
 func PeerDiff(dev Device, want []awgconf.Key) (missing, extra int) {
