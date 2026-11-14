@@ -6,6 +6,12 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"time"
+)
+
+var (
+	aptLockWait  = 10 * time.Minute
+	aptLockRetry = 5 * time.Second
 )
 
 type Runner interface {
@@ -20,6 +26,25 @@ func (Exec) Run(ctx context.Context, name string, args ...string) ([]byte, error
 }
 
 func (Exec) RunInput(ctx context.Context, input []byte, name string, args ...string) ([]byte, error) {
+	if name != "apt-get" {
+		return run(ctx, input, name, args...)
+	}
+	args = append([]string{"-o", fmt.Sprintf("DPkg::Lock::Timeout=%d", int(aptLockWait.Seconds()))}, args...)
+	deadline := time.Now().Add(aptLockWait)
+	for {
+		out, err := run(ctx, input, name, args...)
+		if err == nil || !strings.Contains(err.Error(), "Could not get lock") || time.Now().After(deadline) {
+			return out, err
+		}
+		select {
+		case <-ctx.Done():
+			return out, err
+		case <-time.After(aptLockRetry):
+		}
+	}
+}
+
+func run(ctx context.Context, input []byte, name string, args ...string) ([]byte, error) {
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Env = append(cmd.Environ(), "LC_ALL=C", "DEBIAN_FRONTEND=noninteractive")
 	if input != nil {
