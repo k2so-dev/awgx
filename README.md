@@ -32,7 +32,7 @@
 </picture>
 
 > [!WARNING]
-> **awgx is in alpha.** Commands, the state format and defaults can still change between releases. Please [open an issue](https://github.com/k2so-dev/awgx/issues) when something breaks.
+> **awgx is in beta.** Features are frozen and the state database only changes with a migration, but bugs are still expected. Please [open an issue](https://github.com/k2so-dev/awgx/issues) when something breaks.
 
 awgx installs, configures and maintains an [AmneziaWG](https://docs.amnezia.org/documentation/amnezia-wg/) 3.1 server on the kernel module. It is a single static Go binary with a CLI and an embedded web UI. Every config it generates passes a strict validator, and every change shows its plan before it is applied.
 
@@ -41,7 +41,7 @@ awgx is unofficial and not affiliated with Amnezia.
 ## Quick start
 
 ```sh
-curl -fLo /usr/local/bin/awgx https://github.com/k2so-dev/awgx/releases/download/v0.1.0-alpha.1/awgx-linux-amd64
+curl -fLo /usr/local/bin/awgx https://github.com/k2so-dev/awgx/releases/download/v0.1.0-beta.1/awgx-linux-amd64
 chmod +x /usr/local/bin/awgx
 sudo awgx setup
 ```
@@ -415,7 +415,7 @@ awgx does not touch the host firewall beyond opening the UDP ports (with firewal
 awgx goes public step by step. Every step is a tag; `awgx upgrade --self` on a pre-release build follows pre-releases.
 
 - [x] **Alpha** `v0.1.0-alpha.N`: everything above works. Commands, the state format and defaults may still change.
-- [ ] **Beta** `v0.1.0-beta.N`: features frozen, the state database only changes with a migration, upgrades from the previous beta are tested.
+- [x] **Beta** `v0.1.0-beta.N`: features frozen, the state database only changes with a migration, upgrades from the previous beta are tested.
 - [ ] **Release candidate** `v0.1.0-rc.N`: tested by other people on their servers, no known critical bugs, complete documentation.
 - [ ] **Release** `v0.1.0`: the last release candidate without changes.
 
